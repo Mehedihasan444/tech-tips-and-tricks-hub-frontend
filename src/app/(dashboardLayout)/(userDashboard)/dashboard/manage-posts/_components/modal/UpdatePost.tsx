@@ -99,7 +99,7 @@ export default function UpdatePost({ post }: { post: any }) {
       title,
       category: selectedCategory,
       tags: Array.from(selectedTags),
-      // images: post.images
+      images: post.images
     };
 
     const formData = new FormData();
@@ -110,7 +110,7 @@ export default function UpdatePost({ post }: { post: any }) {
     });
 
     // Trigger update post mutation
-    handleUpdatePost({ formData, postId: post.id });
+    handleUpdatePost({ formData, postId: post._id });
   };
 
   return (

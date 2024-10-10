@@ -5,24 +5,13 @@ import { Divider, Link, User } from "@nextui-org/react";
 import { ThumbsDown, ThumbsUp, Share2, MessageCircle } from "lucide-react";
 import React, { useState } from "react";
 import MediaGallery from "./MediaGallery";
+import parse from "html-react-parser";
+import { useUser } from "@/context/user.provider";
+const CHARACTER_LIMIT = 430; // Set a character limit for description
 
 const PostCard = ({ post }: { post: any }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  // Define the character limit for the preview
-  const CHARACTER_LIMIT = 400;
-
-  // Function to handle "Read More" toggle
-  const handleReadMore = () => {
-    setIsExpanded(!isExpanded);
-  };
-  // Shorten description if not expanded
-  const postDescription = isExpanded
-    ? post.description
-    : post.description.length > CHARACTER_LIMIT
-    ? post.description.slice(0, CHARACTER_LIMIT) + "..."
-    : post.description;
-
+  const [isExpanded, setIsExpanded] = useState(false); // State to toggle 'Read More'
+  const { user } = useUser();
   // Function to handle sharing via Web Share API
   const handleShare = () => {
     if (navigator.share) {
@@ -39,18 +28,23 @@ const PostCard = ({ post }: { post: any }) => {
     }
   };
 
+  // Function to toggle read more/less
+  const handleReadMore = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
     <div className="bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 p-4">
       <div className="flex gap-3 mb-2">
         <User
-          name="Junior Garcia"
+          name={user?.name}
           description={
             <Link href="https://twitter.com/jrgarciadev" size="sm" isExternal>
               @jrgarciadev
             </Link>
           }
           avatarProps={{
-            src: "https://avatars.githubusercontent.com/u/30373425?v=4",
+            src: `${user?.profilePhoto}`,
           }}
         />
       </div>
@@ -66,49 +60,60 @@ const PostCard = ({ post }: { post: any }) => {
         )}
       </div>
 
-      {/* Post description */}
-      <p className="text-gray-600 mt-2">
-        {postDescription}
+      {/* Post content */}
+      <div className="text-gray-600 mt-2">
+        <span className="inline">
 
-        {post?.description?.length > CHARACTER_LIMIT && (
+        {isExpanded
+          ? parse(post.content) // Render full content with HTML
+          : parse(post.content.slice(0, CHARACTER_LIMIT) + "...")}
+    
+    {/* 'Read More'/'Show Less' button */}
+        {post.content?.length > CHARACTER_LIMIT && (
+      
           <button
             onClick={handleReadMore}
-            className="text-teal-600 hover:text-teal-800 text-sm ml-2"
+            className="text-teal-600 hover:text-teal-800 text-sm ml-2 inline"
           >
             {isExpanded ? "Show Less" : "Read More"}
           </button>
         )}
-      </p>
+          </span>
+      
+      </div>
 
       {/* Media Display (images/videos) */}
-      <div className="mt-4">
-        {post?.media?.length > 0 && (
+      {post?.images?.length > 0 && (
+        <div className="mt-4">
           <div className="grid grid-cols-1 gap-4">
-            <MediaGallery media={post.media} />
+            <MediaGallery media={post.images} />
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
       {/* Categories or Tags */}
-      <div className="mt-3 flex flex-wrap gap-2">
-        {post.categories?.map((category: string, index: number) => (
-          <span
-            key={index}
-            className="inline-block cursor-pointer text-blue-800 text-sm font-medium px-1 py-0.5 rounded-full"
-          >
-            #{category}
-          </span>
-        ))}
-      </div>
+      {post.tags?.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {post.tags?.map((tag: string, index: number) => (
+            <span
+              key={index}
+              className="inline-block cursor-pointer text-blue-800 text-sm font-medium px-1 py-0.5 rounded-full"
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* Divider */}
       <div className="my-3">
         <Divider />
       </div>
 
+      {/* Post interaction buttons */}
       <div className="flex justify-between items-center gap-5 px-5">
         {/* Share Section */}
-        <div className="flex justify-between items-center ">
-          {/* Web Share Button */}
+        <div className="flex items-center">
           <button
             onClick={handleShare}
             className="flex items-center text-sm text-teal-600 hover:text-teal-800"
@@ -117,21 +122,23 @@ const PostCard = ({ post }: { post: any }) => {
             Share
           </button>
         </div>
-        <div className="">
+
+        <div>
           <MessageCircle className="w-5 h-5 text-teal-500 mr-1" />
         </div>
+
         {/* Upvote & Downvote Section */}
         <div className="flex justify-between gap-5">
           <div className="flex items-center gap-2">
             <ThumbsUp className="w-5 h-5 text-teal-500" />
-            <span className="text-sm text-teal-600">{post.upvotes}</span>
+            <span className="text-sm text-teal-600">{post.likes}</span>
           </div>
-          <div className="">
+          <div>
             <Divider orientation="vertical" />
           </div>
           <div className="flex items-center gap-2">
             <ThumbsDown className="w-5 h-5 text-teal-500" />
-            <span className="text-sm text-teal-600">{post.downvotes}</span>
+            <span className="text-sm text-teal-600">{post.dislikes}</span>
           </div>
         </div>
       </div>

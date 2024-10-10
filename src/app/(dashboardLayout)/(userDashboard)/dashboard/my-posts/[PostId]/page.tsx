@@ -30,7 +30,7 @@ const PostDetailPage = async ({ params: { PostId } }: IProps) => {
 
       {/* Images Section */}
       {post.images.length > 0 && (
-        <div className="">
+        <div className="flex">
           {post.images.slice(0,2).map((image: string, index: number) => (
             <Image
               key={index}
