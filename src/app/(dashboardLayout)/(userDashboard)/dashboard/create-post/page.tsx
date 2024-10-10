@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { extractAndProcessImages } from "./_utils/extractAndProcessImages";
 import Image from "next/image";
 import { useCreatePost } from "@/hooks/post.hook";
+import { useUser } from "@/context/user.provider";
 
 export default function CreatePost() {
   const { quill, quillRef } = useQuill();
@@ -17,7 +18,7 @@ export default function CreatePost() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTags, setSelectedTags] = useState(new Set([]));
   const [pictures, setPictures] = useState<File[] | []>([]);
-
+  const { user } = useUser();
   const {
     mutate: handleCreatePost,
     // isPending: createPostPending,
@@ -43,10 +44,6 @@ export default function CreatePost() {
             ...prevPictures,
             ...Array.from(files),
           ]);
-
-          // Array.from(files).forEach((file, index) => {
-          //   formData.append(`images[${index}]`, file);
-          // });
         }
       };
     };
@@ -62,7 +59,7 @@ export default function CreatePost() {
       if (quill) {
         quill.setText(""); // Reset quill editor
       }
-    } 
+    }
   }, [quill, isSuccess, pictures]);
 
   // Handle category change
@@ -77,7 +74,6 @@ export default function CreatePost() {
       return;
     }
 
-
     // Append the Quill editor content as HTML
     const quillContent = quill.root.innerHTML;
     const { cleanedContent } = extractAndProcessImages(quillContent);
@@ -86,6 +82,7 @@ export default function CreatePost() {
       title,
       category: selectedCategory,
       tags: Array.from(selectedTags),
+      author: user?._id,
     };
 
     const formData = new FormData();
@@ -94,10 +91,6 @@ export default function CreatePost() {
     pictures.forEach((file) => {
       formData.append("postImages", file);
     });
-    // for (let picture of pictures) {
-    //   formData.append("postImages", picture);
-    // }
-
 
     handleCreatePost(formData);
   };
