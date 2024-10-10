@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, {  FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -22,6 +22,7 @@ import {
 } from "@/app/(dashboardLayout)/(userDashboard)/dashboard/create-post/constant";
 import { useCreatePost } from "@/hooks/post.hook";
 import { extractAndProcessImages } from "@/app/(dashboardLayout)/(userDashboard)/dashboard/create-post/_utils/extractAndProcessImages";
+import Image from "next/image";
 
 export default function CreatePost() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -75,7 +76,7 @@ export default function CreatePost() {
       if (quill) {
         quill.setText(""); // Reset quill editor
       }
-    } 
+    }
   }, [quill, isSuccess, pictures]);
 
   // Handle category change
@@ -89,7 +90,6 @@ export default function CreatePost() {
       toast.warning("Please fill up all input fields!");
       return;
     }
-
 
     // Append the Quill editor content as HTML
     const quillContent = quill.root.innerHTML;
@@ -111,7 +111,6 @@ export default function CreatePost() {
     //   formData.append("postImages", picture);
     // }
 
-
     handleCreatePost(formData);
   };
 
@@ -130,125 +129,143 @@ export default function CreatePost() {
         classNames={{
           body: "py-6",
           backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
-          base: "border-[#292f46] bg-[#19172c] dark:bg-[#19172c] text-primary",
-          header: "border-b-[1px] border-[#292f46]",
-          footer: "border-t-[1px] border-[#292f46]",
+          base: "border rounded-md  text-primary",
+          header: "border-b-[1px] ",
+          footer: "border-t-[1px] ",
           closeButton: "hover:bg-white/5 active:bg-white/10",
         }}
       >
         <ModalContent>
           {(onClose) => (
             <>
-            <form onSubmit={handleSubmit}>
-              <ModalHeader className="flex flex-col gap-1">
-                Create Your Post
-              </ModalHeader>
-              <ModalBody className="flex flex-col gap-4 h-[450px] overflow-y-scroll">
-                <div className="">
-                {/* Post title */}
-                <div className="mb-6 ">
-                  <Input
-                    id="title"
-                    isRequired
-                    name="title"
-                    className="text-white"
-                    variant={"underlined"}
-                    label="Post Title"
-                    placeholder="Enter Post Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
+              <form onSubmit={handleSubmit}>
+                <ModalHeader className="flex flex-col gap-1">
+                  Create Your Post
+                </ModalHeader>
+                <ModalBody className="flex flex-col mb-2 gap-4 h-[450px] overflow-y-scroll">
+                  <div className="">
+                    {/* Post title */}
+                    <div className="mb-6 ">
+                      <Input
+                        id="title"
+                        isRequired
+                        name="title"
+                        className="!text-primary"
+                        variant={"underlined"}
+                        label="Post Title"
+                        placeholder="Enter Post Title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                      />
+                    </div>
 
-                {/* Select Category */}
-                <div className="mb-6">
-                  <Select
-                    isRequired
-                    id="category"
-                    name="category"
-                    className=""
-                    variant={"underlined"}
-                    label="Select your relevant Category"
-                    placeholder="Select a Category"
-                    value={selectedCategory}
-                    onChange={handleCategoryChange}
-                  >
-                    {postCategories.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
+                    {/* Select Category */}
+                    <div className="mb-6">
+                      <Select
+                        isRequired
+                        id="category"
+                        name="category"
+                        className=""
+                        variant={"underlined"}
+                        label="Select your relevant Category"
+                        placeholder="Select a Category"
+                        value={selectedCategory}
+                        onChange={handleCategoryChange}
+                      >
+                        {postCategories.map((item) => (
+                          <SelectItem key={item} value={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
 
-                {/* Select Tags */}
-                <div className="mb-6">
-                  <Select
-                    label="Select your relevant Tags"
-                    isRequired
-                    name="tags"
-                    variant={"underlined"}
-                    selectionMode="multiple"
-                    placeholder="Select Tags"
-                    selectedKeys={selectedTags}
-                    className=""
-                    onChange={handleSelectionChange}
-                  >
-                    {postTags.map((tag) => (
-                      <SelectItem key={tag} value={tag}>
-                        {tag}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
+                    {/* Select Tags */}
+                    <div className="mb-6">
+                      <Select
+                        label="Select your relevant Tags"
+                        isRequired
+                        name="tags"
+                        variant={"underlined"}
+                        selectionMode="multiple"
+                        placeholder="Select Tags"
+                        selectedKeys={selectedTags}
+                        className=""
+                        onChange={handleSelectionChange}
+                      >
+                        {postTags.map((tag) => (
+                          <SelectItem key={tag} value={tag}>
+                            {tag}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
 
-                {/* Sticky toolbar */}
-                <div
-                  className="border border-gray-500 rounded-md p-2 overflow-hidden flex flex-col"
-                  style={{
-                    cursor: "text",
-                    borderRadius: "8px",
-                    height: "100%", // Full height for the container
-                  }}
-                >
-                  {/* Toolbar (Sticky at the top) */}
-                  <div
-                    className="sticky top-0 bg-white z-10"
-                    style={{
-                      borderBottom: "1px solid #ccc", // Add border to separate toolbar from content
-                    }}
-                  >
-                    {/* Quill toolbar will automatically appear here */}
+                    {/* Sticky toolbar */}
+                    <div
+                      className="border border-gray-500 rounded-md p-2 overflow-hidden flex flex-col"
+                      style={{
+                        cursor: "text",
+                        borderRadius: "8px",
+                        height: "100%", // Full height for the container
+                      }}
+                    >
+                      {/* Toolbar (Sticky at the top) */}
+                      <div
+                        className="sticky top-0 bg-white z-10"
+                        style={{
+                          borderBottom: "1px solid #ccc", // Add border to separate toolbar from content
+                        }}
+                      >
+                        {/* Quill toolbar will automatically appear here */}
+                      </div>
+
+                      {/* Scrollable Text Area */}
+                      <div
+                        ref={quillRef}
+                        style={{
+                          height: "100%",
+                          background: "white", // Full height for the text editor area
+                          overflowY: "auto", // Make text area scrollable
+                          minHeight: "320px", // Minimum height for text editor area
+                          padding: "10px", // Add padding to text area
+                        }}
+                      />
+                    </div>
+            
                   </div>
+                </ModalBody>
+                <ModalFooter className="justify-between">
+                <div className="float-left flex gap-2 h-16" >
+              {pictures?.map((image, index) => (
+                <Image
+                  key={index}
+                  src={URL.createObjectURL(image)}
+                  alt={"picture"}
+                  width={70}
+                  height={100}
+                  className="object-cover "
+                />
+              ))}
+            </div>
+            <div className="flex gap-2">
 
-                  {/* Scrollable Text Area */}
-                  <div
-                    ref={quillRef}
-                    style={{
-                      height: "100%",
-                      background: "white", // Full height for the text editor area
-                      overflowY: "auto", // Make text area scrollable
-                      minHeight: "320px", // Minimum height for text editor area
-                      padding: "10px", // Add padding to text area
-                    }}
-                  />
-                </div></div>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="primary" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button
-                  className="bg-primary shadow-lg shadow-indigo-500/20"
-                  type="submit"
-                  // onPress={() => {
-                  //   onClose();
-                  // }}
-                >
-                  Post
-                </Button>
-              </ModalFooter>
-            </form>
+                  <Button color="primary" variant="light" onPress={onClose}>
+                    Close
+                  </Button>
+                  <Button
+           
+                    className="bg-primary text-white shadow-lg shadow-indigo-500/20"
+                    type="submit"
+                    // onPress={() => {
+                    //   onClose();
+                    // }}
+                  >
+                    Post
+                  </Button>
+            </div>
+                </ModalFooter>
+              </form>
             </>
           )}
         </ModalContent>
@@ -256,135 +273,3 @@ export default function CreatePost() {
     </>
   );
 }
-// "use client";
-// import React, { useEffect } from "react";
-// import {
-//   Modal,
-//   ModalContent,
-//   ModalHeader,
-//   ModalBody,
-//   ModalFooter,
-//   Button,
-//   useDisclosure,
-// } from "@nextui-org/react";
-// import { useQuill } from "react-quilljs";
-// import "quill/dist/quill.snow.css"; // Add css for snow theme
-
-// export default function CreatePost() {
-//   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
-//   // Custom toolbar options for Quill
-//   const modules = {
-//     toolbar: [
-//       [{ header: [1, 2, 3, false] }], // Headers
-//       ["bold", "italic", "underline", "strike"], // Bold, italic, underline, strikethrough
-//       [{ list: "ordered" }, { list: "bullet" }], // Ordered and unordered lists
-//       ["blockquote", "code-block"], // Blockquote and code block
-//       [{ script: "sub" }, { script: "super" }], // Subscript and superscript
-//       [{ indent: "-1" }, { indent: "+1" }], // Indent
-//       [{ direction: "rtl" }], // Text direction
-//       [{ size: ["small", false, "large", "huge"] }], // Text size
-//       [{ color: [] }, { background: [] }], // Color and background
-//       [{ font: [] }], // Font family
-//       [{ align: [] }], // Text alignment
-//       ["link", "image", "video"], // Add links, images, and videos
-//       ["clean"], // Remove formatting
-//     ],
-//   };
-
-//   const { quill, quillRef } = useQuill({
-//     modules, // Pass custom toolbar modules here
-//     theme: "snow",
-//   });
-
-//   useEffect(() => {
-//     if (quill) {
-//       console.log("Quill is ready!", quill);
-
-//       // Example: Use quill API
-//       quill.on("text-change", (delta, oldDelta, source) => {
-//         console.log("Text change!", quill.getText());
-//       });
-//     }
-//   }, [quill]);
-
-//   return (
-//     <>
-//       <Button onPress={onOpen} color="secondary">
-//         Create Post
-//       </Button>
-//       <Modal
-//         backdrop="opaque"
-//         isOpen={isOpen}
-//         onOpenChange={onOpenChange}
-//         scrollBehavior={"inside"}
-//         radius="lg"
-//         size={"3xl"}
-//         classNames={{
-//           body: "py-6",
-//           backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
-//           base: "border-[#292f46] bg-[#19172c] dark:bg-[#19172c] text-[#a8b0d3]",
-//           header: "border-b-[1px] border-[#292f46]",
-//           footer: "border-t-[1px] border-[#292f46]",
-//           closeButton: "hover:bg-white/5 active:bg-white/10",
-//         }}
-//       >
-//         <ModalContent>
-//           {(onClose) => (
-//             <>
-//               <ModalHeader className="flex flex-col gap-1">
-//                 Create Your Post
-//               </ModalHeader>
-//               <ModalBody className="flex flex-col gap-4 h-[500px]">
-//                 {/* Sticky toolbar */}
-//                 <div
-//                   className="border border-gray-500 rounded-md p-2 overflow-hidden flex flex-col"
-//                   style={{
-//                     cursor: "text",
-//                     borderRadius: "8px",
-//                     height: "100%", // Full height for the container
-//                   }}
-//                 >
-//                   {/* Toolbar (Sticky at the top) */}
-//                   <div
-//                     className="sticky top-0 bg-white z-10"
-//                     style={{
-//                       borderBottom: "1px solid #ccc", // Add border to separate toolbar from content
-//                     }}
-//                   >
-//                     {/* Quill toolbar will automatically appear here */}
-//                   </div>
-
-//                   {/* Scrollable Text Area */}
-//                   <div
-//                     ref={quillRef}
-//                     style={{
-//                       height: "100%",
-//                       background:"white",// Full height for the text editor area
-//                       overflowY: "auto", // Make text area scrollable
-//                       minHeight: "320px", // Minimum height for text editor area
-//                       padding: "10px", // Add padding to text area
-//                     }}
-//                   />
-//                 </div>
-//               </ModalBody>
-//               <ModalFooter>
-//                 <Button color="primary" variant="light" onPress={onClose}>
-//                   Close
-//                 </Button>
-//                 <Button
-//                   className="bg-primary shadow-lg shadow-indigo-500/20"
-//                   onPress={() => {
-//                     onClose();
-//                   }}
-//                 >
-//                   Post
-//                 </Button>
-//               </ModalFooter>
-//             </>
-//           )}
-//         </ModalContent>
-//       </Modal>
-//     </>
-//   );
-// }
