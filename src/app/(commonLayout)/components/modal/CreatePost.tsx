@@ -23,6 +23,7 @@ import {
 import { useCreatePost } from "@/hooks/post.hook";
 import { extractAndProcessImages } from "@/app/(dashboardLayout)/(userDashboard)/dashboard/create-post/_utils/extractAndProcessImages";
 import Image from "next/image";
+import { useUser } from "@/context/user.provider";
 
 export default function CreatePost() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -31,7 +32,7 @@ export default function CreatePost() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTags, setSelectedTags] = useState(new Set([]));
   const [pictures, setPictures] = useState<File[] | []>([]);
-
+  const { user } = useUser();
   const {
     mutate: handleCreatePost,
     // isPending: createPostPending,
@@ -99,6 +100,7 @@ export default function CreatePost() {
       title,
       category: selectedCategory,
       tags: Array.from(selectedTags),
+      author: user?._id,
     };
 
     const formData = new FormData();

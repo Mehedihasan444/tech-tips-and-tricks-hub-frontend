@@ -11,8 +11,10 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import { useCallback, useMemo, useState } from "react";
-import { Eye, FilePenLine, Trash2 } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 import Link from "next/link";
+import UpdatePost from "./modal/UpdatePost";
+import { useDeletePost } from "@/hooks/post.hook";
 
 const columns = [
   { name: "TITLE", uid: "title" },
@@ -33,6 +35,8 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
   const [page, setPage] = useState<number>(1);
   const rowsPerPage = 4;
 
+  const { mutate: handleDeletePost } = useDeletePost(); // Use update post hook
+
   const sortedPosts = useMemo(() => {
     if (!sortedBy) return posts;
     const { column, order } = sortedBy;
@@ -52,14 +56,17 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
     return sortedPosts.slice(start, end);
   }, [page, sortedPosts]);
 
-  type OmittedKeys = 'content' | 'images' | 'tags' | 'author'; // Specify the keys you want to omit
+  type OmittedKeys = "content" | "images" | "tags" | "author"; // Specify the keys you want to omit
 
   type TPostWithoutContentAndImages = Omit<TPost, OmittedKeys>; // Create the new type
 
   const renderCell = useCallback(
-    (post: TPostWithoutContentAndImages, columnKey: keyof TPostWithoutContentAndImages | "actions") => {
-        const cellValue = post[columnKey as keyof TPostWithoutContentAndImages];
-    
+    (
+      post: TPostWithoutContentAndImages,
+      columnKey: keyof TPostWithoutContentAndImages | "actions"
+    ) => {
+      const cellValue = post[columnKey as keyof TPostWithoutContentAndImages];
+
       switch (columnKey) {
         case "title":
           return (
@@ -70,57 +77,53 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
               </h3>
             </div>
           );
-  
+
         case "likes":
           return (
             <div className="text-primary">
               {typeof cellValue === "number" ? cellValue : null}
             </div>
           );
-  
+
         case "dislikes":
           return (
             <div className="text-secondary">
               {typeof cellValue === "number" ? cellValue : null}
             </div>
           );
-  
+
         case "actions":
           return (
             <div className="relative flex justify-center items-center gap-2">
               <Tooltip color="primary" content="View post">
                 <Link href={`/dashboard/my-posts/${post._id}`}>
-                
-                <span className="text-xl text-primary cursor-pointer active:opacity-50">
-                  <Eye />
-                </span>
+                  <span className="text-xl text-primary cursor-pointer active:opacity-50">
+                    <Eye />
+                  </span>
                 </Link>
               </Tooltip>
-              <Tooltip color="primary" content="Edit post">
-                <span className="text-lg text-primary cursor-pointer active:opacity-50">
-                  <FilePenLine />
-                </span>
-              </Tooltip>
+            {/* update modal */}
+                <UpdatePost post={post} />
               <Tooltip color="danger" content="Delete post">
-                <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                <span onClick={()=>handleDeletePost({postId:post._id})} className="text-lg text-danger cursor-pointer active:opacity-50">
                   <Trash2 />
                 </span>
               </Tooltip>
             </div>
           );
-  
+
         default:
           // Ensure any other value is directly renderable as a ReactNode
           if (typeof cellValue === "string" || typeof cellValue === "number") {
             return cellValue; // Return strings or numbers directly
           }
           // Return null for non-renderable values
-          return null; 
+          return null;
       }
     },
     []
   );
-  
+
   const handleSort = (column: keyof TPost) => {
     let order: SortOrder = "asc";
     if (sortedBy && sortedBy.column === column && sortedBy.order === "asc") {
@@ -171,7 +174,10 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
             <TableRow key={item._id}>
               {(columnKey) => (
                 <TableCell>
-                  {renderCell(item, columnKey as keyof TPostWithoutContentAndImages | "actions")}
+                  {renderCell(
+                    item,
+                    columnKey as keyof TPostWithoutContentAndImages | "actions"
+                  )}
                 </TableCell>
               )}
             </TableRow>

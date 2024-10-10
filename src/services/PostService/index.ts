@@ -59,3 +59,34 @@ export const getMyPosts = async () => {
 
   return res.data;
 };
+
+export const updatePost = async (
+  formData: FormData,
+  postId: string
+): Promise<any> => {
+  try {
+    const { data } = await axiosInstance.put(`/posts/${postId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    revalidateTag("posts");
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to update post");
+  }
+};
+
+export const deletePost = async (postId: string) => {
+  try {
+    const res = await axiosInstance.delete(`/posts/${postId}`);
+    revalidateTag("posts");
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to delete post");
+  }
+};

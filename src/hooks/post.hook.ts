@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { createPost } from "@/services/PostService";
+import { createPost, deletePost, updatePost } from "@/services/PostService";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -16,3 +16,28 @@ export const useCreatePost = () => {
     },
   });
 };
+export const useUpdatePost = () => {
+  return useMutation<any, Error, { postId: string; formData: FormData }>({
+    mutationKey: ["UPDATE_POST"],
+    mutationFn: async ({ postId, formData }) => await updatePost(formData,postId ), // Destructure the input
+    onSuccess: () => {
+      toast.success("Post updated successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+};
+export const useDeletePost = () => {
+  return useMutation<any, Error, { postId: string }>({
+    mutationKey: ["DELETE_POST"],
+    mutationFn: async ({ postId }) => await deletePost(postId), // Destructure the input
+    onSuccess: () => {
+      toast.success("Post deleted successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+};
+
