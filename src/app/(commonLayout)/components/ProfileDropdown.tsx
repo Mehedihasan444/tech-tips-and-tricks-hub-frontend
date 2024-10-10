@@ -1,4 +1,6 @@
 "use client";
+import { useUser } from "@/context/user.provider";
+import { logout } from "@/services/AuthService";
 import {
   Dropdown,
   DropdownTrigger,
@@ -10,8 +12,19 @@ import {
 } from "@nextui-org/react";
 import { SquareUser } from "lucide-react";
 import Link from "next/link";
-
+import { usePathname, useRouter } from "next/navigation";
 export default function ProfileDropdown() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user, setIsLoading: userLoading } = useUser();
+
+  const handleLogout = () => {
+    logout();
+    userLoading(true);
+    // Redirect to login page with current path as a redirect query parameter
+    router.push(`/login?redirect=${pathname}`);
+  };
+
   return (
     <Dropdown
       showArrow
@@ -26,7 +39,7 @@ export default function ProfileDropdown() {
           as="button"
           color="secondary"
           size="md"
-          src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+          src={user?.profilePhoto}
         />
       </DropdownTrigger>
       <DropdownMenu
@@ -54,15 +67,15 @@ export default function ProfileDropdown() {
             className="h-14 gap-2 opacity-100"
           >
             <User
-              name="Junior Garcia"
-              description="@jrgarciadev"
+              name={user?.name}
+              description={user?.email}
               classNames={{
                 name: "text-default-600",
                 description: "text-default-500",
               }}
               avatarProps={{
                 size: "sm",
-                src: "https://avatars.githubusercontent.com/u/30373425?v=4",
+                src: `${user?.profilePhoto}`,
               }}
             />
           </DropdownItem>
@@ -79,16 +92,19 @@ export default function ProfileDropdown() {
             <Link href="/contact-us">Contact Us</Link>
           </DropdownItem>
           <DropdownItem key="dashboard">
-            <Link href="/dashboard">Dashboard</Link>
+            <Link
+              href={`${
+                user?.role == "USER" ? "/dashboard" : "/admin-dashboard"
+              }`}
+            >
+              Dashboard
+            </Link>
           </DropdownItem>
         </DropdownSection>
 
         <DropdownSection aria-label="Help & Feedback">
           <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-          <DropdownItem
-            key="logout"
-            //   onClick={() => logOutUser()}
-          >
+          <DropdownItem key="logout" onClick={() => handleLogout()}>
             Log Out
           </DropdownItem>
         </DropdownSection>

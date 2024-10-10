@@ -55,7 +55,7 @@ const LoginForm = () => {
 
   return (
     <form
-      className="w-full space-y-6 max-w-md border p-4 rounded-md border-primary"
+      className="w-full space-y-3 max-w-md border p-4 rounded-md border-primary"
       onSubmit={handleSubmit}
     >
       <h1 className="text-3xl font-semibold text-center">Login</h1>
