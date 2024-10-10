@@ -1,20 +1,20 @@
 "use client";
 import React from "react";
 import { Button, Spinner } from "@nextui-org/react";
-import { useFormStatus } from "react-dom";
 
-const SubmitBtn = ({ text }: { text: string }) => {
-  const { pending } = useFormStatus();
+
+const SubmitBtn = ({ text,isLoading }: { text: string ,isLoading:boolean}) => {
+
   return (
     <Button
       size="lg"
       radius="full"
       type="submit"
-      disabled={pending}
+      disabled={isLoading}
       variant="bordered"
       color="primary"
     >
-      {pending ? <Spinner /> : text}
+      {isLoading ? <Spinner /> : text}
     </Button>
   );
 };

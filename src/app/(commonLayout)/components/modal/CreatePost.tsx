@@ -232,38 +232,35 @@ export default function CreatePost() {
                         }}
                       />
                     </div>
-            
                   </div>
                 </ModalBody>
                 <ModalFooter className="justify-between">
-                <div className="float-left flex gap-2 h-16" >
-              {pictures?.map((image, index) => (
-                <Image
-                  key={index}
-                  src={URL.createObjectURL(image)}
-                  alt={"picture"}
-                  width={70}
-                  height={100}
-                  className="object-cover "
-                />
-              ))}
-            </div>
-            <div className="flex gap-2">
-
-                  <Button color="primary" variant="light" onPress={onClose}>
-                    Close
-                  </Button>
-                  <Button
-           
-                    className="bg-primary text-white shadow-lg shadow-indigo-500/20"
-                    type="submit"
-                    // onPress={() => {
-                    //   onClose();
-                    // }}
-                  >
-                    Post
-                  </Button>
-            </div>
+                  <div className="float-left flex gap-2 h-16">
+                    {pictures?.map((image, index) => (
+                      <Image
+                        key={index}
+                        src={URL.createObjectURL(image)}
+                        alt={"picture"}
+                        width={70}
+                        height={100}
+                        className="object-cover "
+                      />
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button color="primary" variant="light" onPress={onClose}>
+                      Close
+                    </Button>
+                    <Button
+                      className="bg-primary text-white shadow-lg shadow-indigo-500/20"
+                      type="submit"
+                      // onPress={() => {
+                      //   onClose();
+                      // }}
+                    >
+                      Post
+                    </Button>
+                  </div>
                 </ModalFooter>
               </form>
             </>

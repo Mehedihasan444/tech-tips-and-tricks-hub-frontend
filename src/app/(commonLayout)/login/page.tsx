@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-
 import photo from "@/assets/authenticationIMG.svg";
 import LoginForm from "../components/LoginForm";
 
