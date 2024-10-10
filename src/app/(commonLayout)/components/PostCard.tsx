@@ -7,11 +7,14 @@ import React, { useState } from "react";
 import MediaGallery from "./MediaGallery";
 import parse from "html-react-parser";
 import { useUser } from "@/context/user.provider";
+import { useUpdatePost } from "@/hooks/post.hook";
 const CHARACTER_LIMIT = 430; // Set a character limit for description
 
 const PostCard = ({ post }: { post: any }) => {
   const [isExpanded, setIsExpanded] = useState(false); // State to toggle 'Read More'
   const { user } = useUser();
+  const { mutate: handleUpdatePost, isSuccess } = useUpdatePost(); // Use update post hook
+
   // Function to handle sharing via Web Share API
   const handleShare = () => {
     if (navigator.share) {
@@ -31,6 +34,21 @@ const PostCard = ({ post }: { post: any }) => {
   // Function to toggle read more/less
   const handleReadMore = () => {
     setIsExpanded(!isExpanded);
+  };
+  const handleLikesAndDislikes = (id: number) => {
+    // Update post likes and dislikes
+    const formData = new FormData();
+    const updatedPostData:{
+      likes?: number;
+      dislikes?: number;
+    } = {};
+    if (id == 0) {
+      updatedPostData.dislikes = post.dislikes + 1;
+    } else if (id == 1) {
+      updatedPostData.likes = post.likes + 1;
+    }
+    formData.append("data", JSON.stringify(updatedPostData));
+    handleUpdatePost({ formData, postId: post._id });
   };
 
   return (
@@ -63,23 +81,20 @@ const PostCard = ({ post }: { post: any }) => {
       {/* Post content */}
       <div className="text-gray-600 mt-2">
         <span className="inline">
+          {isExpanded
+            ? parse(post.content) // Render full content with HTML
+            : parse(post.content.slice(0, CHARACTER_LIMIT) + "...")}
 
-        {isExpanded
-          ? parse(post.content) // Render full content with HTML
-          : parse(post.content.slice(0, CHARACTER_LIMIT) + "...")}
-    
-    {/* 'Read More'/'Show Less' button */}
-        {post.content?.length > CHARACTER_LIMIT && (
-      
-          <button
-            onClick={handleReadMore}
-            className="text-teal-600 hover:text-teal-800 text-sm ml-2 inline"
-          >
-            {isExpanded ? "Show Less" : "Read More"}
-          </button>
-        )}
-          </span>
-      
+          {/* 'Read More'/'Show Less' button */}
+          {post.content?.length > CHARACTER_LIMIT && (
+            <button
+              onClick={handleReadMore}
+              className="text-teal-600 hover:text-teal-800 text-sm ml-2 inline"
+            >
+              {isExpanded ? "Show Less" : "Read More"}
+            </button>
+          )}
+        </span>
       </div>
 
       {/* Media Display (images/videos) */}
@@ -130,14 +145,18 @@ const PostCard = ({ post }: { post: any }) => {
         {/* Upvote & Downvote Section */}
         <div className="flex justify-between gap-5">
           <div className="flex items-center gap-2">
-            <ThumbsUp className="w-5 h-5 text-teal-500" />
+            <button onClick={() => handleLikesAndDislikes(1)}>
+              <ThumbsUp className="w-5 h-5 text-teal-500" />
+            </button>
             <span className="text-sm text-teal-600">{post.likes}</span>
           </div>
           <div>
             <Divider orientation="vertical" />
           </div>
           <div className="flex items-center gap-2">
-            <ThumbsDown className="w-5 h-5 text-teal-500" />
+            <button onClick={() => handleLikesAndDislikes(0)}>
+              <ThumbsDown className="w-5 h-5 text-teal-500" />
+            </button>
             <span className="text-sm text-teal-600">{post.dislikes}</span>
           </div>
         </div>
