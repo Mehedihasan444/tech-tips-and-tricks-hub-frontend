@@ -56,7 +56,7 @@ const PostCard = ({ post }: { post: any }) => {
         <User
           name={user?.name}
           description={
-            <Link href={`/profile/${user?.nickName}`} size="sm" isExternal>
+            <Link href={`/profile/${user?.nickName}`} size="sm">
               {user?.nickName}
             </Link>
           }

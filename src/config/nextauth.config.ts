@@ -3,6 +3,8 @@ import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { cookies } from "next/headers";
 import axiosInstance from "./axios.config";
+import { generateNickname } from "@/utils/generateNickname";
+
 
 export const AuthOptions: NextAuthOptions = {
   providers: [
@@ -22,10 +24,11 @@ export const AuthOptions: NextAuthOptions = {
         }
 
         if (account?.provider === "google") {
-          const response: any = await axiosInstance.post("/auth/login", {
+          const response: any = await axiosInstance.post("/auth/social-login", {
             name: profile.name,
             email: profile.email,
-            img: profile.picture,
+            profilePhoto: profile.picture,
+            nickName: generateNickname(profile.name)
           });
 
           if (
