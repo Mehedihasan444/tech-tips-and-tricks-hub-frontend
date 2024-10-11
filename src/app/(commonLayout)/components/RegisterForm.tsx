@@ -8,6 +8,7 @@ import { EyeIcon, EyeOff } from "lucide-react";
 import { useUserRegistration } from "@/hooks/auth.hook";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { generateNickname } from "@/utils/generateNickname";
 
 const profilePhoto =
   "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
@@ -44,7 +45,7 @@ const RegisterForm = () => {
     }
   }, [isPending, isSuccess, isError, error, redirect, router]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors(null);
 
@@ -57,8 +58,8 @@ const RegisterForm = () => {
       setErrors("Passwords do not match.");
       return;
     }
-
-    handleUserRegistration({ name, email, password, profilePhoto });
+    const nickName = await generateNickname(name)
+    handleUserRegistration({ name, email, password, profilePhoto, nickName });
   };
 
   return (
@@ -144,9 +145,7 @@ const RegisterForm = () => {
         />
 
         {/* Error message */}
-        {errors && (
-          <p className="text-red-500 text-center text-sm">{errors}</p>
-        )}
+        {errors && <p className="text-red-500 text-center text-sm">{errors}</p>}
 
         {/* Submit button */}
         <SubmitBtn text="Register" isLoading={isPending} />

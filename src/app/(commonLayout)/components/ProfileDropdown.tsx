@@ -83,7 +83,7 @@ export default function ProfileDropdown() {
             key="my-profile"
             endContent={<SquareUser className="text-large" />}
           >
-            <Link href="/my-profile">My Profile</Link>
+            <Link href={`/profile/${user?.nickName}`}>My Profile</Link>
           </DropdownItem>
           <DropdownItem key="about-us">
             <Link href="/about-us">About Us</Link>

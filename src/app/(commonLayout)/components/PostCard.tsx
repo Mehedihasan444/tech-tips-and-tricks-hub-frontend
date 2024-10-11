@@ -6,14 +6,13 @@ import { ThumbsDown, ThumbsUp, Share2, MessageCircle } from "lucide-react";
 import React, { useState } from "react";
 import MediaGallery from "./MediaGallery";
 import parse from "html-react-parser";
-import { useUser } from "@/context/user.provider";
 import { useUpdatePost } from "@/hooks/post.hook";
 const CHARACTER_LIMIT = 430; // Set a character limit for description
 
 const PostCard = ({ post }: { post: any }) => {
   const [isExpanded, setIsExpanded] = useState(false); // State to toggle 'Read More'
-  const { user } = useUser();
-  const { mutate: handleUpdatePost, isSuccess } = useUpdatePost(); // Use update post hook
+  const { mutate: handleUpdatePost } = useUpdatePost(); // Use update post hook
+  const user  =post?.author
 
   // Function to handle sharing via Web Share API
   const handleShare = () => {
@@ -57,8 +56,8 @@ const PostCard = ({ post }: { post: any }) => {
         <User
           name={user?.name}
           description={
-            <Link href="https://twitter.com/jrgarciadev" size="sm" isExternal>
-              @jrgarciadev
+            <Link href={`/profile/${user?.nickName}`} size="sm" isExternal>
+              {user?.nickName}
             </Link>
           }
           avatarProps={{
@@ -83,7 +82,7 @@ const PostCard = ({ post }: { post: any }) => {
         <span className="inline">
           {isExpanded
             ? parse(post.content) // Render full content with HTML
-            : parse(post.content.slice(0, CHARACTER_LIMIT) + "...")}
+            : parse(post.content?.slice(0, CHARACTER_LIMIT) + "...")}
 
           {/* 'Read More'/'Show Less' button */}
           {post.content?.length > CHARACTER_LIMIT && (

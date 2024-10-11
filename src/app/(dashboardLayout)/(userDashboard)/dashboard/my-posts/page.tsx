@@ -5,41 +5,9 @@ import { getMyPosts } from "@/services/PostService";
 import Filter from "./_componets/Filter";
 import Paginate from "./_componets/Paginate";
 import { TPost } from "@/types/TPost";
-// !only for development purposes
-// ! it should be removed
 
-const allPosts = [
-  {
-    id: 1,
-    title: "Understanding JavaScript Closures",
-    description:
-      "A detailed guide on JavaScript closures, how they work, and common use cases.",
-    date: "October 5, 2024",
-    category: "JavaScript",
-    image: "https://via.placeholder.com/300x200",
-  },
-  {
-    id: 2,
-    title: "React Hooks: A Complete Guide",
-    description:
-      "An in-depth exploration of React hooks and their applications in functional components.",
-    date: "October 1, 2024",
-    category: "React",
-    image: "https://via.placeholder.com/300x200",
-  },
-  {
-    id: 3,
-    title: "Mastering CSS Flexbox",
-    description:
-      "Learn the power of CSS Flexbox to create flexible and responsive layouts.",
-    date: "September 25, 2024",
-    category: "CSS",
-    image: "https://via.placeholder.com/300x200",
-  },
-  // Add more posts as needed
-];
 const MyPosts = async () => {
-  const { data: posts } = await getMyPosts();
+  const { data: posts } = await getMyPosts("");
 
   return (
     <div className="min-h-screen bg-gray-100 py-5 px-5 md:px-20">
@@ -126,7 +94,7 @@ const MyPosts = async () => {
       </div>
 
       {/* Pagination Section */}
-      <Paginate allPosts={allPosts} />
+      <Paginate allPosts={posts} />
     </div>
   );
 };

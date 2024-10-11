@@ -8,6 +8,7 @@ import axiosInstance from "@/config/axios.config";
 
 
 export const registerUser = async (userData:Record<string,unknown>) => {
+  
   try {
     const { data } = await axiosInstance.post("/auth/register", userData);
 
@@ -58,6 +59,7 @@ export const getCurrentUser = async () => {
       role: decodedToken.role,
       status: decodedToken.status,
       profilePhoto: decodedToken.profilePhoto,
+      nickName:decodedToken.nickName,
     };
   }
 

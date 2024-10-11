@@ -52,7 +52,12 @@ export const getPost = async (postId: string) => {
 
   return res.json();
 };
-export const getMyPosts = async () => {
+export const getMyPosts = async (id:string) => {
+  if (id) {
+    
+    const res = await axiosInstance.get(`/posts?author=${id}`);
+    return res.data;
+  }
   const user = await getCurrentUser();
 
   const res = await axiosInstance.get(`/posts?author=${user?._id}`);

@@ -7,7 +7,7 @@ type IEducation={
 
 }
 type ISocialMedia={
-    name: string;
+    platform: string;
     url: string;
 }
 export interface IUser {
@@ -19,11 +19,15 @@ export interface IUser {
     mobileNumber: string;
     profilePhoto: string;
     bio?: string;
+    nickName?: string;
+    shortBio?: string;
     dateOfBirth?: string;
     gender?: string;
     maritalStatus?: string;
     education?:IEducation[];
     socialMedia?: ISocialMedia[];
+    followers?:IUser[],
+    following?:IUser[],
     createdAt?: string;
     updatedAt?: string;
     __v?: number;
