@@ -8,6 +8,7 @@ import {
 import Searchbar from "../Searchbar";
 import ProfileDropdown from "../ProfileDropdown";
 import Link from "next/link";
+import { ThemeSwitcher } from "./ThemeSwitcher";
   
   export default function NavigationBar() {
     return (
@@ -27,6 +28,9 @@ import Link from "next/link";
           <Searchbar />
         </NavbarContent>
         <NavbarContent justify="end">
+          <NavbarItem>
+            <ThemeSwitcher />
+          </NavbarItem>
           <NavbarItem>
             <ProfileDropdown />
           </NavbarItem>

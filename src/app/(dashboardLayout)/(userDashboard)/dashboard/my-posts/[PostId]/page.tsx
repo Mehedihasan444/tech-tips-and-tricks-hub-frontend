@@ -3,6 +3,7 @@ import { User, Tooltip, Button, Divider } from "@nextui-org/react"; // For UI co
 import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
 import { getPost } from "@/services/PostService";
 import Image from "next/image";
+import DownloadPdf from "@/app/(commonLayout)/posts/_components/DownloadPdf";
 
 interface IProps {
   params: {
@@ -89,24 +90,30 @@ const PostDetailPage = async ({ params: { PostId } }: IProps) => {
       <Divider />
 
       {/* Share Options */}
-      <section className="flex items-center gap-5">
-        <div className="">
-          <h2 className="font-semibold text-gray-500">Share this post : </h2>
+      <section className="flex justify-between  items-center gap-5">
+        <div className="flex items-center gap-5">
+          <div className="">
+            <h2 className="font-semibold text-gray-500">Share this post : </h2>
+          </div>
+          <div className="flex gap-5 items-center">
+            <Tooltip content="Share on Facebook">
+              <Button startContent={<Share2 />} color="primary">
+                Facebook
+              </Button>
+            </Tooltip>
+            <Tooltip content="Share on Twitter">
+              <Button startContent={<Share2 />} color="secondary">
+                Twitter
+              </Button>
+            </Tooltip>
+            <Tooltip content="Copy Link">
+              <Button startContent={<Share2 />}>Copy Link</Button>
+            </Tooltip>
+          </div>
         </div>
-        <div className="flex gap-5 items-center">
-          <Tooltip content="Share on Facebook">
-            <Button startContent={<Share2 />} color="primary">
-              Facebook
-            </Button>
-          </Tooltip>
-          <Tooltip content="Share on Twitter">
-            <Button startContent={<Share2 />} color="secondary">
-              Twitter
-            </Button>
-          </Tooltip>
-          <Tooltip content="Copy Link">
-            <Button startContent={<Share2 />}>Copy Link</Button>
-          </Tooltip>
+        <div className="">
+          {/* PDF Download Button */}
+          <DownloadPdf post={post} />
         </div>
       </section>
       {/* Comments Section */}

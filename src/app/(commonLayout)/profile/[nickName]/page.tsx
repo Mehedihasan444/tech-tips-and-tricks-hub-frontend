@@ -11,6 +11,8 @@ import PersonalInformation from "../_components/PersonalInformation";
 import Media from "../_components/Media";
 import PreviousPost from "../_components/PreviousPost";
 import Followers from "../_components/Followers";
+import Bio from "../_components/Bio";
+import ShortBio from "../_components/ShortBio";
 
 interface IProps {
   params: {
@@ -22,11 +24,10 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
   const { data: user = {} } = await getUser(nickName);
   const { data: posts = {} } = await getMyPosts(user?._id);
 
-
   return (
-    <div className="max-w-6xl mx-auto p-4 bg-teal-50">
+    <div className="max-w-5xl mx-auto p-4 ">
       {/* Header Section */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 bg-default-50 p-3 shadow-md rounded-lg">
         <div className="flex items-center space-x-4">
           <Image
             width={100}
@@ -37,12 +38,14 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
           />
           <div className="space-y-1">
             <h1 className="text-2xl font-bold">{user?.name}</h1>
-            <p className="text-gray-600">{user?.shortBio}</p>
+            {/* shortBio */}
+            <ShortBio user={user}/>
+            {/* <p className="text-gray-600">{user?.shortBio}</p> */}
           </div>
         </div>
         <div className="flex justify-center items-center">
           {/* Followers Section */}
-         <Followers user={user} posts={posts}/>
+          <Followers user={user} posts={posts} />
         </div>
       </div>{" "}
       <div className="my-3">
@@ -50,13 +53,10 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
       </div>
       <div className="flex justify-between items-center gap-5">
         {/* Bio Section */}
-        <div className="bg-white shadow-md rounded-lg p-6 mb-6 flex-1">
-          <h2 className="text-xl font-semibold mb-4">Bio</h2>
-          <p>{user?.bio}</p>
-        </div>
+        <Bio user={user}/>
       </div>
       <div className="flex justify-between gap-5 ">
-        <div className="flex-1 min-w-96">
+        <div className="flex-1 min-w-80">
           {/* Personal Information Section */}
           <PersonalInformation user={user} />
           {/* Media Section */}
@@ -65,7 +65,7 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
         <div className="">
           {" "}
           {/* Post Creation Option */}
-          <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+          <div className="bg-default-50 shadow-md rounded-lg p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">Create a New Post</h2>
             <Divider />
             <div className="flex justify-between gap-5 mt-2">

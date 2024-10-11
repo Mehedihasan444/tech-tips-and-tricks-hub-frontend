@@ -28,15 +28,15 @@ export const CollapseItems = ({ icon, items, title, isActive }: Props) => {
           classNames={{
             indicator: "data-[open=true]:rotate-90",
             trigger:
-              "py-0 min-h-[44px] hover:bg-default-100  rounded-xl active:scale-[0.98] data-[open=true]:bg-teal-100 transition-transform px-3.5",
+              "py-0 min-h-[44px] hover:bg-default-100  rounded-xl active:scale-[0.98] data-[open=true]:bg-default-100 transition-transform px-3.5",
 
             title: `px-0 flex text-base gap-2  h-full items-center cursor-pointer`,
-            content: "bg-teal-100",
+            content: "bg-default-100 rounded-xl active:scale-[0.98] mt-1",
           }}
           aria-label="Accordion 1"
           title={
             <div className="flex flex-row gap-2 ">
-              <span>{icon}</span>
+              <span >{icon}</span>
               <span>{title}</span>
             </div>
           }

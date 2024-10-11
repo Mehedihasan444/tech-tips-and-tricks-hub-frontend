@@ -51,7 +51,7 @@ const PostCard = ({ post }: { post: any }) => {
   };
 
   return (
-    <div className="bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 p-4">
+    <div className="bg-default-50 border border-gray-300 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 p-4">
       <div className="flex gap-3 mb-2">
         <User
           name={user?.name}
@@ -63,11 +63,14 @@ const PostCard = ({ post }: { post: any }) => {
           avatarProps={{
             src: `${user?.profilePhoto}`,
           }}
+          className="text-default-900"
         />
       </div>
       <div className="flex justify-between items-center">
-        <h3 className="text-xl font-semibold text-gray-800">
+        <h3 className="">
+          <Link href={`/posts/${post?._id}`} className="text-default-800 text-xl font-semibold ">
           Title: {post.title}
+          </Link>
         </h3>
         {/* Premium tag */}
         {post.isPremium && (

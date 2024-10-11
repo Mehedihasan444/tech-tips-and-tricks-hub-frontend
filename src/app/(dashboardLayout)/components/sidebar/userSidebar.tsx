@@ -6,7 +6,6 @@ import {
   Home,
   Users,
   Edit,
-  Trash2,
   BadgePlus,
 } from "lucide-react";
 import Link from "next/link";
@@ -30,11 +29,8 @@ export const SidebarWrapper = () => {
       >
         <div className={Sidebar.Header()}>
           <Link href="/" className="text-2xl font-semibold">
-            <span className="hover:text-teal-600 transition duration-300">
-              TECH
-            </span>
-            <span className="text-teal-600 hover:text-black transition duration-300">
-              NEST
+            <span className="text-teal-600 transition duration-300">
+              TECHNEST
             </span>
           </Link>
         </div>

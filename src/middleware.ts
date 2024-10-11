@@ -17,7 +17,7 @@ interface TDecode {
 }
 
 const AuthRoutes = ["/login", "/register"];
-const CommonRoutes = ["/", "/my-profile", "/about-us", "/contact-us"];
+const CommonRoutes = ["/", "/profile", "/about-us", "/contact-us"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -76,7 +76,7 @@ export const config = {
     "/",
     "/about-us",
     "/contact-us",
-    "/my-profile",
+    "/profile",
     "/dashboard/:page*",
     "/admin-dashboard/:page*",
   ],
