@@ -13,6 +13,7 @@ import PreviousPost from "../_components/PreviousPost";
 import Followers from "../_components/Followers";
 import Bio from "../_components/Bio";
 import ShortBio from "../_components/ShortBio";
+import { getCurrentUser } from "@/services/AuthService";
 
 interface IProps {
   params: {
@@ -23,7 +24,11 @@ interface IProps {
 const ProfilePage = async ({ params: { nickName } }: IProps) => {
   const { data: user = {} } = await getUser(nickName);
   const { data: posts = {} } = await getMyPosts(user?._id);
-
+const loggedInUser =await getCurrentUser()
+let showEditOption=false
+if (loggedInUser?._id===user?._id) {
+  showEditOption = true
+}
   return (
     <div className="max-w-5xl mx-auto p-4 ">
       {/* Header Section */}
@@ -39,7 +44,7 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
           <div className="space-y-1">
             <h1 className="text-2xl font-bold">{user?.name}</h1>
             {/* shortBio */}
-            <ShortBio user={user}/>
+            <ShortBio user={user} showEditOption={showEditOption}/>
             {/* <p className="text-gray-600">{user?.shortBio}</p> */}
           </div>
         </div>
@@ -53,12 +58,12 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
       </div>
       <div className="flex justify-between items-center gap-5">
         {/* Bio Section */}
-        <Bio user={user}/>
+        <Bio user={user} showEditOption={showEditOption}/>
       </div>
       <div className="flex justify-between gap-5 ">
         <div className="flex-1 min-w-80">
           {/* Personal Information Section */}
-          <PersonalInformation user={user} />
+          <PersonalInformation user={user} showEditOption={showEditOption}/>
           {/* Media Section */}
           <Media posts={posts} />
         </div>
@@ -69,9 +74,9 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
             <h2 className="text-xl font-semibold mb-4">Create a New Post</h2>
             <Divider />
             <div className="flex justify-between gap-5 mt-2">
-              <h3 className="font-semibold text-teal-600 flex gap-2">
+              <h3 className=" text-teal-600 flex gap-2 border rounded-full  p-3 w-full shadow-inner ">
                 <ClipboardPenLine />
-                What&lsquo;s on your mind?
+                What&lsquo;s on your mind?...
               </h3>
               {/* create post modal */}
               <CreatePost />
