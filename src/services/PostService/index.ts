@@ -13,6 +13,7 @@ export const createPost = async (formData: FormData): Promise<any> => {
       },
     });
 
+
     revalidateTag("posts");
 
     return data;

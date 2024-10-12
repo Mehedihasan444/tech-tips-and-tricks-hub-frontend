@@ -16,7 +16,10 @@ const Followers = ({ user, posts }: { user: IUser; posts: TPost[] }) => {
 
   const handleFollowAndUnfollow = () => {
     if (!loggedInUser) return; // Ensure loggedInUser is not null
-    handleUserUpdate({ userId: user._id, loggedInUserId: loggedInUser._id });
+    const userData={
+      loggedInUserId: loggedInUser._id 
+    }
+    handleUserUpdate({ userId: user._id, userData });
   };
   return (
     <div className=" p-6  flex justify-between items-center flex-1 gap-5 text-center ">

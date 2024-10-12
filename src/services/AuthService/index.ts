@@ -5,6 +5,7 @@
 import { cookies } from "next/headers";
 import { jwtDecode } from "jwt-decode";
 import axiosInstance from "@/config/axios.config";
+import { revalidateTag } from "next/cache";
 
 
 export const registerUser = async (userData:Record<string,unknown>) => {
@@ -16,7 +17,7 @@ export const registerUser = async (userData:Record<string,unknown>) => {
       cookies().set("accessToken", data?.data?.accessToken);
       cookies().set("refreshToken", data?.data?.refreshToken);
     }
-
+    revalidateTag("users");
     return data;
   } catch (error: any) {
     throw new Error(error);
