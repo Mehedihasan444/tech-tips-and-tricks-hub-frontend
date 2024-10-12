@@ -1,9 +1,12 @@
 import React from "react";
 import { getMyPosts } from "@/services/PostService";
 import PostTable from "./_components/PostTable";
+import { getCurrentUser } from "@/services/AuthService";
 
 export default async function ManagePosts() {
-  const { data: posts } = await getMyPosts();
+  const user = await getCurrentUser();
+  if (!user) return;
+  const { data: posts } = await getMyPosts(user._id);
 
   return (
     <div className="container mx-auto p-6 bg-white  rounded-lg">
