@@ -1,18 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 "use client";
-import { Divider, Link, User } from "@nextui-org/react";
+import { Button, Divider, Link, User } from "@nextui-org/react";
 import { ThumbsDown, ThumbsUp, Share2, MessageCircle } from "lucide-react";
 import React, { useState } from "react";
 import MediaGallery from "./MediaGallery";
 import parse from "html-react-parser";
 import { useUpdatePost } from "@/hooks/post.hook";
+import { useUser } from "@/context/user.provider";
+
 const CHARACTER_LIMIT = 430; // Set a character limit for description
 
 const PostCard = ({ post }: { post: any }) => {
-  const [isExpanded, setIsExpanded] = useState(false); // State to toggle 'Read More'
-  const { mutate: handleUpdatePost } = useUpdatePost(); // Use update post hook
-  const user  =post?.author
+  // current login user
+  const { user: loggedInUser } = useUser();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const { mutate: handleUpdatePost } = useUpdatePost();
+  const user = post?.author;
 
   // Function to handle sharing via Web Share API
   const handleShare = () => {
@@ -29,7 +33,6 @@ const PostCard = ({ post }: { post: any }) => {
       alert("Web Share API is not supported in your browser.");
     }
   };
-
   // Function to toggle read more/less
   const handleReadMore = () => {
     setIsExpanded(!isExpanded);
@@ -37,7 +40,7 @@ const PostCard = ({ post }: { post: any }) => {
   const handleLikesAndDislikes = (id: number) => {
     // Update post likes and dislikes
     const formData = new FormData();
-    const updatedPostData:{
+    const updatedPostData: {
       likes?: number;
       dislikes?: number;
     } = {};
@@ -52,7 +55,7 @@ const PostCard = ({ post }: { post: any }) => {
 
   return (
     <div className="bg-default-50 border border-gray-300 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 p-4">
-      <div className="flex gap-3 mb-2">
+      <div className="flex justify-between items-center gap-3 mb-2">
         <User
           name={user?.name}
           description={
@@ -65,48 +68,75 @@ const PostCard = ({ post }: { post: any }) => {
           }}
           className="text-default-900"
         />
-      </div>
-      <div className="flex justify-between items-center">
-        <h3 className="">
-          <Link href={`/posts/${post?._id}`} className="text-default-800 text-xl font-semibold ">
-          Title: {post.title}
-          </Link>
-        </h3>
         {/* Premium tag */}
         {post.isPremium && (
           <span className="inline-block bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-            Premium
+            👑Premium
           </span>
         )}
       </div>
-
-      {/* Post content */}
-      <div className="text-gray-600 mt-2">
-        <span className="inline">
-          {isExpanded
-            ? parse(post.content) // Render full content with HTML
-            : parse(post.content?.slice(0, CHARACTER_LIMIT) + "...")}
-
-          {/* 'Read More'/'Show Less' button */}
-          {post.content?.length > CHARACTER_LIMIT && (
-            <button
-              onClick={handleReadMore}
-              className="text-teal-600 hover:text-teal-800 text-sm ml-2 inline"
-            >
-              {isExpanded ? "Show Less" : "Read More"}
-            </button>
-          )}
-        </span>
+      <div className="flex justify-between items-center">
+        <h3 className="">
+          <Link
+            href={`/posts/${post?._id}`}
+            className="text-default-800 text-xl font-semibold "
+          >
+            Title: {post.title}
+          </Link>
+        </h3>
       </div>
+      <div className="relative">
+        <div
+          className={` ${
+            post?.isPremium && !loggedInUser?.isPremium ? "blur-sm" : ""
+          }`}
+        >
+          <div className="text-gray-600 mt-2">
+            <span className="inline">
+              {isExpanded
+                ? parse(post.content)
+                : parse(post.content?.slice(0, CHARACTER_LIMIT) + "...")}
 
-      {/* Media Display (images/videos) */}
-      {post?.images?.length > 0 && (
-        <div className="mt-4">
-          <div className="grid grid-cols-1 gap-4">
-            <MediaGallery media={post.images} />
+              {post.content?.length > CHARACTER_LIMIT && (
+                <button
+                  onClick={handleReadMore}
+                  className="text-teal-600 hover:text-teal-800 text-sm ml-2 inline"
+                >
+                  {isExpanded ? "Show Less" : "Read More"}
+                </button>
+              )}
+            </span>
           </div>
+
+          {post?.images?.length > 0 && (
+            <div className="mt-4">
+              <div className="grid grid-cols-1 gap-4">
+                <MediaGallery media={post.images} />
+              </div>
+            </div>
+          )}
         </div>
-      )}
+        <div
+          className={`${
+            post?.isPremium && loggedInUser?.isPremium ? "hidden" : ""
+          } absolute top-0 right-0 left-0 bottom-0 font-medium px-5 py-3 flex justify-center items-center h-full`}
+        >
+          {post?.isPremium && !loggedInUser?.isPremium && (
+            <div className=" flex flex-col items-center">
+              <span className="font-semibold text-xl">
+                This post is only available to premium users.
+              </span>
+              <div className="w-16">
+                <Link href="/subscription">
+                  <Button size="sm" variant="bordered" color="primary">
+                    Get Subscription
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Categories or Tags */}
       {post.tags?.length > 0 && (

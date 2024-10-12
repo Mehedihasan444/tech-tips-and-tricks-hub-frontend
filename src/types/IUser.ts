@@ -29,6 +29,8 @@ export interface IUser {
   following?: IUser[];
   createdAt?: string;
   updatedAt?: string;
+  isPremium?: boolean;
+subscriptionStartDate?: string;
   __v?: number;
 }
 
@@ -53,5 +55,7 @@ export interface IUserData {
   following?: IUser[];
   createdAt?: string;
   updatedAt?: string;
+  isPremium?: boolean;
+  subscriptionStartDate?: string;
   __v?: number;
 }

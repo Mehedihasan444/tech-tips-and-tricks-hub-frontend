@@ -6,10 +6,9 @@ import { cookies } from "next/headers";
 import { jwtDecode } from "jwt-decode";
 import axiosInstance from "@/config/axios.config";
 import { revalidateTag } from "next/cache";
+import { getUser } from "../UserService";
 
-
-export const registerUser = async (userData:Record<string,unknown>) => {
-  
+export const registerUser = async (userData: Record<string, unknown>) => {
   try {
     const { data } = await axiosInstance.post("/auth/register", userData);
 
@@ -24,7 +23,7 @@ export const registerUser = async (userData:Record<string,unknown>) => {
   }
 };
 
-export const loginUser = async (userData:Record<string,unknown>) => {
+export const loginUser = async (userData: Record<string, unknown>) => {
   try {
     const { data } = await axiosInstance.post("/auth/login", userData);
 
@@ -51,17 +50,11 @@ export const getCurrentUser = async () => {
 
   if (accessToken) {
     decodedToken = await jwtDecode(accessToken);
+    if (decodedToken) {
+      const user = await getUser(decodedToken?.nickName);
+      return user?.data;
+    }
 
-    return {
-      _id: decodedToken._id,
-      name: decodedToken.name,
-      email: decodedToken.email,
-      mobileNumber: decodedToken.mobileNumber,
-      role: decodedToken.role,
-      status: decodedToken.status,
-      profilePhoto: decodedToken.profilePhoto,
-      nickName:decodedToken.nickName,
-    };
   }
 
   return decodedToken;
