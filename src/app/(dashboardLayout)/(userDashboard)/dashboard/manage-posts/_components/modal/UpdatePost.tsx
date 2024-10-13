@@ -13,6 +13,7 @@ import {
   Select,
   SelectItem,
   Tooltip,
+  Checkbox,
 } from "@nextui-org/react";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
@@ -33,6 +34,7 @@ export default function UpdatePost({ post }: { post: any }) {
   const [selectedCategory, setSelectedCategory] = useState(
     post?.category || ""
   ); // Prefill category
+  const [isPremium, setIsPremium] = useState(post?.isPremium||false);
   const [selectedTags, setSelectedTags] = useState<Set<string>>(
     new Set(post?.tags || [])
   );
@@ -98,6 +100,7 @@ export default function UpdatePost({ post }: { post: any }) {
       content: cleanedContent,
       title,
       category: selectedCategory,
+      isPremium,
       tags: Array.from(selectedTags),
       images: post.images
     };
@@ -161,7 +164,7 @@ export default function UpdatePost({ post }: { post: any }) {
                     />
                   </div>
 
-                  <div className="mb-6">
+                  <div className="mb-6 flex justify-between items-center gap-5">
                     <Select
                       isRequired
                       id="category"
@@ -178,6 +181,12 @@ export default function UpdatePost({ post }: { post: any }) {
                         </SelectItem>
                       ))}
                     </Select>
+                    <Checkbox
+                        isSelected={isPremium}
+                        onValueChange={setIsPremium}
+                      >
+                        Premium
+                      </Checkbox>
                   </div>
 
                   <div className="mb-6">

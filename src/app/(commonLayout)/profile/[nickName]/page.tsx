@@ -70,6 +70,8 @@ if (loggedInUser?._id===user?._id) {
         <div className="">
           {" "}
           {/* Post Creation Option */}
+          {
+            showEditOption&&
           <div className="bg-default-50 shadow-md rounded-lg p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">Create a New Post</h2>
             <Divider />
@@ -82,8 +84,9 @@ if (loggedInUser?._id===user?._id) {
               <CreatePost />
             </div>
           </div>
+          }
           {/* Previous Posts Section */}
-          <PreviousPost posts={posts} />
+          <PreviousPost posts={posts} showEditOption={showEditOption}/>
         </div>
       </div>
     </div>

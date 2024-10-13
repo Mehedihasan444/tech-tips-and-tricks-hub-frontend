@@ -128,7 +128,7 @@ const PostCard = ({ post }: { post: any }) => {
             </div>
           )}
         </div>
-        {post?.isPremium && loggedInUser?.isPremium &&
+        {post?.isPremium && !loggedInUser?.isPremium &&
             post?.author?.nickName != loggedInUser?.nickName && (
           <div
             className={`${

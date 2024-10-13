@@ -12,6 +12,7 @@ import {
   Input,
   Select,
   SelectItem,
+  Checkbox,
 } from "@nextui-org/react";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
@@ -31,6 +32,7 @@ export default function CreatePost() {
   const [title, setTitle] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTags, setSelectedTags] = useState(new Set([]));
+  const [isPremium, setIsPremium] = useState(false);
   const [pictures, setPictures] = useState<File[] | []>([]);
   const { user } = useUser();
   const {
@@ -99,6 +101,7 @@ export default function CreatePost() {
       content: cleanedContent,
       title,
       category: selectedCategory,
+      isPremium,
       tags: Array.from(selectedTags),
       author: user?._id,
     };
@@ -162,7 +165,7 @@ export default function CreatePost() {
                     </div>
 
                     {/* Select Category */}
-                    <div className="mb-6">
+                    <div className="mb-6 flex justify-between items-center gap-5">
                       <Select
                         isRequired
                         id="category"
@@ -180,6 +183,13 @@ export default function CreatePost() {
                           </SelectItem>
                         ))}
                       </Select>
+                      <Checkbox
+                        isSelected={isPremium}
+                        onValueChange={setIsPremium}
+                      
+                      >
+                        Premium
+                      </Checkbox>
                     </div>
 
                     {/* Select Tags */}

@@ -31,27 +31,13 @@ export const getPosts = async () => {
   };
 
   const res = await fetch(
-    `${envConfig.baseApi}/posts?sortBy=-createdAt&limit=9`,
+    `${envConfig.baseApi}/posts`,
     fetchOption
   );
 
   return res.json();
 };
-// export const getPost = async (postId: string) => {
-//   let fetchOptions = {};
 
-//   fetchOptions = {
-//     cache: "no-store",
-//   };
-
-//   const res = await fetch(`${envConfig.baseApi}/posts/${postId}`, fetchOptions);
-
-//   if (!res.ok) {
-//     throw new Error("Failed to fetch data");
-//   }
-
-//   return res.json();
-// };
 export const getPost = async (postId: string) => {
   const fetchOptions = {
     cache: "no-store"as RequestCache,

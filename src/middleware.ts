@@ -17,7 +17,14 @@ interface TDecode {
 }
 
 const AuthRoutes = ["/login", "/register"];
-const CommonRoutes = ["/", "/profile", "/about-us", "/contact-us"];
+const CommonRoutes = [
+  "/",
+  "/profile",
+  "/about-us",
+  "/contact-us",
+  "/posts",
+  "/subscription",
+];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -62,7 +69,7 @@ export async function middleware(request: NextRequest) {
     }
 
     // Redirect to home page if none of the conditions match
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // If for some reason the token is invalid, redirect to login
@@ -76,6 +83,8 @@ export const config = {
     "/",
     "/about-us",
     "/contact-us",
+    "/posts",
+    "/subscription",
     "/profile",
     "/dashboard/:page*",
     "/admin-dashboard/:page*",
