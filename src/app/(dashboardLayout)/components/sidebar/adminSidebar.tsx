@@ -1,10 +1,18 @@
-import { Avatar, Tooltip } from "@nextui-org/react";
 import { CollapseItems } from "./collapse-items";
 import { SidebarItem } from "./sidebar-item";
 import { SidebarMenu } from "./sidebar-menu";
 import { Sidebar } from "./sidebar.styles";
 
-import { BackpackIcon, Banknote, Car, CreditCardIcon, FileClock, FileStack, FileText, Home, User } from "lucide-react";
+import {
+  BackpackIcon,
+  Banknote,
+  CreditCardIcon,
+  FileClock,
+  FileStack,
+  FileText,
+  Home,
+  User,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSidebarContext } from "../../layout/layout-context";
@@ -55,23 +63,21 @@ export const AdminSidebarWrapper = () => {
               />
               <CollapseItems
                 icon={<Banknote />}
-                items={[{title:"Banks Accounts",
-                  icon: <BackpackIcon/>
-                }, {title:"Credit Cards",
-                  icon: <CreditCardIcon/>
-                }]}
-                title="Balances"
+                title="Amount Transactions"
+                items={[
+                  {
+                    title: "Author",
+                    icon: <BackpackIcon />,
+                    href : "/admin-dashboard/author-transactions",
+                  },
+                  {
+                    title: "User",
+                    icon: <CreditCardIcon />,
+                    href : "/admin-dashboard/user-transactions",
+                  },
+                ]}
               />
-              {/* <SidebarItem
-                isActive={pathname === "/customers"}
-                title="Customers"
-                icon={<Home />}
-              />
-              <SidebarItem
-                isActive={pathname === "/products"}
-                title="Products"
-                icon={<Home />}
-              /> */}
+
               <SidebarItem
                 isActive={pathname === "/reports"}
                 title="Reports"
@@ -79,7 +85,6 @@ export const AdminSidebarWrapper = () => {
               />
             </SidebarMenu>
 
-       
             <SidebarMenu title="Updates">
               <SidebarItem
                 isActive={pathname === "/changelog"}

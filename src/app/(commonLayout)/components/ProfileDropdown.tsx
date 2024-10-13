@@ -10,7 +10,7 @@ import {
   User,
   Avatar,
 } from "@nextui-org/react";
-import { SquareUser } from "lucide-react";
+import { CrownIcon, SquareUser } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 export default function ProfileDropdown() {
@@ -103,6 +103,7 @@ export default function ProfileDropdown() {
         </DropdownSection>
 
         <DropdownSection aria-label="Help & Feedback">
+          <DropdownItem key="get_subscription" endContent={<CrownIcon className="text-large text-orange-500" />}><Link href="/subscription">Get Subscription</Link></DropdownItem>
           <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
           <DropdownItem key="logout" onClick={() => handleLogout()}>
             Log Out

@@ -1,18 +1,15 @@
 import PageTitle from "@/app/(dashboardLayout)/components/_page-title/PageTitle";
-import { getCurrentUser } from "@/services/AuthService";
 import { getPayments } from "@/services/PaymentService";
 import { IUser } from "@/types/IUser";
 import React from "react";
-type TPayment={
-  userId:IUser,
-  transactionId:string;
-  createdAt:string;
-  updatedAt:string;
-}
-const PaymentInfoPage = async () => {
-  const user=await getCurrentUser()
-  const userId=user?._id
-  const { data: payments } = await getPayments(userId);
+type TPayment = {
+  userId: IUser;
+  transactionId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+const page = async () => {
+  const { data: payments } = await getPayments("");
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="w-full h-full max-w-4xl bg-white shadow-md rounded-lg p-8">
@@ -28,7 +25,8 @@ const PaymentInfoPage = async () => {
                 <th className="px-4 py-2 border">Payment Method</th>
                 <th className="px-4 py-2 border">Cardholder Name</th>
                 <th className="px-4 py-2 border">Payment Date</th>
-                <th className="px-4 py-2 border">Amount</th>
+                <th className="px-4 py-2 border">Author Get</th>
+                <th className="px-4 py-2 border">Cut Off</th>
               </tr>
             </thead>
             <tbody>
@@ -45,7 +43,8 @@ const PaymentInfoPage = async () => {
                     <td className="border px-4 py-2">
                       {new Date(payment.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="border px-4 py-2">$20</td>
+                    <td className="border px-4 py-2">$15</td>
+                    <td className="border px-4 py-2">$5</td>
                   </tr>
                 ))
               ) : (
@@ -78,4 +77,4 @@ const PaymentInfoPage = async () => {
   );
 };
 
-export default PaymentInfoPage;
+export default page;

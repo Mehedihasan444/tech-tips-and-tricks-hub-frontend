@@ -1,18 +1,15 @@
-import PageTitle from "@/app/(dashboardLayout)/components/_page-title/PageTitle";
-import { getCurrentUser } from "@/services/AuthService";
+import React from "react";
+import PageTitle from "../../../components/_page-title/PageTitle";
 import { getPayments } from "@/services/PaymentService";
 import { IUser } from "@/types/IUser";
-import React from "react";
-type TPayment={
-  userId:IUser,
-  transactionId:string;
-  createdAt:string;
-  updatedAt:string;
-}
+type TPayment = {
+  userId: IUser;
+  transactionId: string;
+  createdAt: string;
+  updatedAt: string;
+};
 const PaymentInfoPage = async () => {
-  const user=await getCurrentUser()
-  const userId=user?._id
-  const { data: payments } = await getPayments(userId);
+  const { data: payments } = await getPayments("");
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="w-full h-full max-w-4xl bg-white shadow-md rounded-lg p-8">

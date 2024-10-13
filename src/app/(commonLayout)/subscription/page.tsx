@@ -5,17 +5,11 @@ import React from "react";
 
 const SubscriptionPage = () => {
   const { user } = useUser();
-  const {
-    mutate: handleMakePayment,
-    // isPending,
-    // isSuccess,
-  } = useCreatePayment();
+  const { mutate: handleMakePayment } = useCreatePayment();
 
   const handlePay = () => {
     // Implement payment logic here
     handleMakePayment({ userId: user?._id as string });
-
-
   };
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
