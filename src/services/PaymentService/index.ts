@@ -23,7 +23,7 @@ export const createPayment = async (userId: string): Promise<any> => {
 export const getPayments = async (userId:string) => {
   const fetchOption = {
     next: {
-      cache: "force-cache",
+      cache: "force-cache" as RequestCache,
       tags: ["payments"],
     },
   };

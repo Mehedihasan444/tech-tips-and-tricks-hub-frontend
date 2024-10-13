@@ -9,7 +9,7 @@ export const getUsers = async () => {
   let fetchOptions = {};
 
   fetchOptions = {
-    cache: "force-cache",
+    cache: "force-cache" as RequestCache,
   };
 
   const res = await fetch(`${envConfig.baseApi}/users`, fetchOptions);
@@ -24,7 +24,7 @@ export const getUser = async (nickName: string) => {
   let fetchOptions = {};
 
   fetchOptions = {
-    cache: "no-store",
+    cache: "no-store" as RequestCache,
   };
 
   const res = await fetch(

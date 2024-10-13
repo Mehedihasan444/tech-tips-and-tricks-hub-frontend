@@ -13,7 +13,6 @@ export const createPost = async (formData: FormData): Promise<any> => {
       },
     });
 
-
     revalidateTag("posts");
 
     return data;
@@ -26,7 +25,7 @@ export const createPost = async (formData: FormData): Promise<any> => {
 export const getPosts = async () => {
   const fetchOption = {
     next: {
-      cache: "force-cache",
+      cache: "force-cache" as RequestCache,
       tags: ["posts"],
     },
   };
@@ -38,24 +37,41 @@ export const getPosts = async () => {
 
   return res.json();
 };
-export const getPost = async (postId: string) => {
-  let fetchOptions = {};
+// export const getPost = async (postId: string) => {
+//   let fetchOptions = {};
 
-  fetchOptions = {
-    cache: "no-store",
+//   fetchOptions = {
+//     cache: "no-store",
+//   };
+
+//   const res = await fetch(`${envConfig.baseApi}/posts/${postId}`, fetchOptions);
+
+//   if (!res.ok) {
+//     throw new Error("Failed to fetch data");
+//   }
+
+//   return res.json();
+// };
+export const getPost = async (postId: string) => {
+  const fetchOptions = {
+    cache: "no-store"as RequestCache,
   };
 
   const res = await fetch(`${envConfig.baseApi}/posts/${postId}`, fetchOptions);
 
   if (!res.ok) {
+    console.log("Response status:", res.status);
+    console.log("Response text:", await res.text());
     throw new Error("Failed to fetch data");
   }
 
-  return res.json();
+  const jsonData = await res.json();
+  console.log("Parsed JSON:", jsonData);
+  return jsonData;
 };
-export const getMyPosts = async (id:string) => {
+
+export const getMyPosts = async (id: string) => {
   if (id) {
-    
     const res = await axiosInstance.get(`/posts?author=${id}`);
     return res.data;
   }

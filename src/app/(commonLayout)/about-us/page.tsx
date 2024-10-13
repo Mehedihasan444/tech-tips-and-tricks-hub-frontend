@@ -1,9 +1,9 @@
 import React from "react";
-import CompanyHistory from "./CompanyHistory";
-import TeamMembers from "./TeamMembers";
-import OurFleet from "./OurFleet";
+import CompanyHistory from "./_components/CompanyHistory";
+import TeamMembers from "./_components/TeamMembers";
+import OurFleet from "./_components/OurFleet";
 import { Button } from "@nextui-org/react";
-import ValuesCommitment from "./ValuesCommitment";
+import ValuesCommitment from "./_components/ValuesCommitment";
 import aboutUs from "@/assets/aboutUs.jpg";
 
 const AboutPage = () => {

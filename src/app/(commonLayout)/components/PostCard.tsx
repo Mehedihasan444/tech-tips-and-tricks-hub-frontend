@@ -76,19 +76,29 @@ const PostCard = ({ post }: { post: any }) => {
         )}
       </div>
       <div className="flex justify-between items-center">
-        <h3 className="">
-          <Link
-            href={`/posts/${post?._id}`}
-            className="text-default-800 text-xl font-semibold "
-          >
-            Title: {post.title}
-          </Link>
-        </h3>
+        <div className="">
+          {post?.isPremium && !loggedInUser?.isPremium ? (
+            <h3 className="text-default-800 text-xl font-semibold ">
+              Title: {post.title}
+            </h3>
+          ) : (
+            <Link
+              href={`/posts/${post?._id}`}
+              className="text-default-800 text-xl font-semibold "
+            >
+              Title: {post.title}
+            </Link>
+          )}
+        </div>
       </div>
       <div className="relative">
         <div
           className={` ${
-            post?.isPremium && !loggedInUser?.isPremium ? "blur-sm" : ""
+            post?.isPremium &&
+            !loggedInUser?.isPremium &&
+            post?.author?.nickName != loggedInUser?.nickName
+              ? "blur-sm"
+              : ""
           }`}
         >
           <div className="text-gray-600 mt-2">
@@ -99,6 +109,8 @@ const PostCard = ({ post }: { post: any }) => {
 
               {post.content?.length > CHARACTER_LIMIT && (
                 <button
+                  disabled={post?.isPremium && !loggedInUser?.isPremium &&
+                    post?.author?.nickName != loggedInUser?.nickName}
                   onClick={handleReadMore}
                   className="text-teal-600 hover:text-teal-800 text-sm ml-2 inline"
                 >
@@ -111,31 +123,35 @@ const PostCard = ({ post }: { post: any }) => {
           {post?.images?.length > 0 && (
             <div className="mt-4">
               <div className="grid grid-cols-1 gap-4">
-                <MediaGallery media={post.images} />
+                <MediaGallery media={post?.images} />
               </div>
             </div>
           )}
         </div>
-        <div
-          className={`${
-            post?.isPremium && loggedInUser?.isPremium ? "hidden" : ""
-          } absolute top-0 right-0 left-0 bottom-0 font-medium px-5 py-3 flex justify-center items-center h-full`}
-        >
-          {post?.isPremium && !loggedInUser?.isPremium && (
-            <div className=" flex flex-col items-center">
-              <span className="font-semibold text-xl">
-                This post is only available to premium users.
-              </span>
-              <div className="w-16">
-                <Link href="/subscription">
-                  <Button size="sm" variant="bordered" color="primary">
-                    Get Subscription
-                  </Button>
-                </Link>
+        {post?.isPremium && loggedInUser?.isPremium &&
+            post?.author?.nickName != loggedInUser?.nickName && (
+          <div
+            className={`${
+              post?.isPremium && loggedInUser?.isPremium ? "hidden" : ""
+            } absolute top-0 right-0 left-0 bottom-0 font-medium px-5 py-3 flex justify-center items-center h-full`}
+          >
+            {post?.isPremium && !loggedInUser?.isPremium &&
+            post?.author?.nickName != loggedInUser?.nickName && (
+              <div className=" flex flex-col items-center">
+                <span className="font-semibold text-xl">
+                  This post is only available to premium users.
+                </span>
+                <div className="w-16">
+                  <Link href="/subscription">
+                    <Button size="sm" variant="bordered" color="primary">
+                      Get Subscription
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Categories or Tags */}
