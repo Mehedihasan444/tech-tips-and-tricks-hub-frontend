@@ -8,6 +8,8 @@ import React from "react";
 const Followers = ({ user, posts }: { user: IUser; posts: TPost[] }) => {
   const { user: loggedInUser } = useUser();
   const { mutate: handleUserUpdate } = useUpdateUser();
+
+
   const isFollower = () => {
     if (!loggedInUser || !user) return false; // Ensure loggedInUser and user are not null
     const res = user?.followers?.find((i) => i._id === loggedInUser._id);
@@ -16,11 +18,13 @@ const Followers = ({ user, posts }: { user: IUser; posts: TPost[] }) => {
 
   const handleFollowAndUnfollow = () => {
     if (!loggedInUser) return; // Ensure loggedInUser is not null
-    const userData={
-      loggedInUserId: loggedInUser._id 
-    }
+    const userData = {
+      loggedInUserId: loggedInUser._id,
+    };
     handleUserUpdate({ userId: user._id, userData });
   };
+
+  
   return (
     <div className=" p-6  flex justify-between items-center flex-1 gap-5 text-center ">
       <div className="flex flex-col items-center justify-center">

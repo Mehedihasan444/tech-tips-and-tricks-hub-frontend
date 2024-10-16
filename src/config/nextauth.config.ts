@@ -5,20 +5,17 @@ import { cookies } from "next/headers";
 import axiosInstance from "./axios.config";
 import { generateNickname } from "@/utils/generateNickname";
 
-
 export const AuthOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET as string,
+      clientId: process.env.GOOGLE_ID as string,
+      clientSecret: process.env.GOOGLE_SECRET as string,
     }),
   ],
 
   callbacks: {
     async signIn({ profile, account }: any) {
       try {
-        console.log({ profile, account });
-
         if (!profile || !account) {
           return false;
         }
@@ -28,7 +25,7 @@ export const AuthOptions: NextAuthOptions = {
             name: profile.name,
             email: profile.email,
             profilePhoto: profile.picture,
-            nickName: generateNickname(profile.name)
+            nickName: generateNickname(profile.name),
           });
 
           if (
@@ -54,6 +51,5 @@ export const AuthOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
-
-  secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET as string,
+  secret: process.env.NEXTAUTH_SECRET as string,
 };

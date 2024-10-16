@@ -83,17 +83,19 @@ export default function ProfileDropdown() {
             key="my-profile"
             endContent={<SquareUser className="text-large" />}
           >
-            <Link href={`/profile/${user?.nickName}`}>My Profile</Link>
+            <Link href={`/profile/${user?.nickName}`} aria-label={`/profile/${user?.nickName}`}>My Profile</Link>
           </DropdownItem>
           <DropdownItem key="about-us">
-            <Link href="/about-us">About Us</Link>
+            <Link href="/about-us" aria-label={"about-us"}>About Us</Link>
           </DropdownItem>
           <DropdownItem key="contact-us">
-            <Link href="/contact-us">Contact Us</Link>
+            <Link href="/contact-us" aria-label={"contact-us"}>Contact Us</Link>
           </DropdownItem>
           <DropdownItem key="dashboard">
             <Link
               href={`${
+                user?.role == "USER" ? "/dashboard" : "/admin-dashboard"
+              }`} aria-label={`${
                 user?.role == "USER" ? "/dashboard" : "/admin-dashboard"
               }`}
             >
@@ -103,7 +105,8 @@ export default function ProfileDropdown() {
         </DropdownSection>
 
         <DropdownSection aria-label="Help & Feedback">
-          <DropdownItem key="get_subscription" endContent={<CrownIcon className="text-large text-orange-500" />}><Link href="/subscription">Get Subscription</Link></DropdownItem>
+          <DropdownItem key="get_subscription" endContent={<CrownIcon className="text-large text-orange-500" />}>
+          <Link href="/subscription" aria-label={"subscription"}>Get Subscription</Link></DropdownItem>
           <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
           <DropdownItem key="logout" onClick={() => handleLogout()}>
             Log Out

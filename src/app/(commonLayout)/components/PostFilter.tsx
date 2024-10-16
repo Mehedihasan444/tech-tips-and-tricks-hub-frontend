@@ -5,7 +5,7 @@ import {
   useGetFilteredPostsByCategory,
 } from "@/hooks/search.hook";
 import { TPost } from "@/types/TPost";
-import { Select, SelectItem, } from "@nextui-org/react";
+import { Select, SelectItem } from "@nextui-org/react";
 import React, { Dispatch, useEffect, useState } from "react";
 
 const PostFilter = ({ setData }: { setData: Dispatch<TPost[]> }) => {
@@ -35,8 +35,8 @@ const PostFilter = ({ setData }: { setData: Dispatch<TPost[]> }) => {
 
   useEffect(() => {
     if (category) {
-      if (category=='all') {
-     setCategory('')
+      if (category == "all") {
+        setCategory("");
       }
       handleFilterCategory(category);
     }
@@ -60,7 +60,6 @@ const PostFilter = ({ setData }: { setData: Dispatch<TPost[]> }) => {
     }
   }, [posts, isShortSuccess, isCategorizedSuccess, setData]);
 
-
   return (
     <div className="flex gap-5">
       <Select
@@ -72,12 +71,11 @@ const PostFilter = ({ setData }: { setData: Dispatch<TPost[]> }) => {
         variant="bordered"
         onChange={(e) => setCategory(e.target.value)}
       >
-        {
-        postCategories?.map((item) => (<SelectItem key={item} value={item}>
+        {postCategories?.map((item) => (
+          <SelectItem key={item} value={item}>
             {item}
           </SelectItem>
-        ))
-        }
+        ))}
       </Select>
       <Select
         name="sortBy"
@@ -91,10 +89,10 @@ const PostFilter = ({ setData }: { setData: Dispatch<TPost[]> }) => {
         <SelectItem key={"latest"} value="latest">
           Latest
         </SelectItem>
-        <SelectItem key={"upvoted"} value="likes">
+        <SelectItem key={"upvoted"} value="-likes">
           Most Upvoted
         </SelectItem>
-        <SelectItem key={"downvoted"} value="dislikes">
+        <SelectItem key={"downvoted"} value="-dislikes">
           Most Downvoted
         </SelectItem>
       </Select>

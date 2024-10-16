@@ -109,12 +109,13 @@ export default function CreatePost() {
     const formData = new FormData();
 
     formData.append("data", JSON.stringify(postData));
-    pictures.forEach((file) => {
-      formData.append("postImages", file);
-    });
-    // for (let picture of pictures) {
-    //   formData.append("postImages", picture);
-    // }
+    if (pictures) {
+      
+      pictures.forEach((file) => {
+        formData.append("postImages", file);
+      });
+    }
+
 
     handleCreatePost(formData);
   };

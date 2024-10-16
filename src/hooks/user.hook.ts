@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { deleteUser, updateUser } from "@/services/UserService";
+import { deleteUser, updateProfilePhoto, updateUser } from "@/services/UserService";
 import { IUserData } from "@/types/IUser";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -10,6 +10,19 @@ export const useUpdateUser = () => {
     mutationKey: ["UPDATE_USER"],
     mutationFn: async ({ userId, userData }) =>
       await updateUser(userData, userId), // Destructure the input
+    onSuccess: () => {
+      toast.success("User updated successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+};
+export const useUpdateProfilePhoto = () => {
+  return useMutation<any, Error, FormData>({
+    mutationKey: ["UPDATE_USER"],
+    mutationFn: async (userData) =>
+      await updateProfilePhoto(userData), // Destructure the input
     onSuccess: () => {
       toast.success("User updated successfully");
     },

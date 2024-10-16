@@ -38,6 +38,35 @@ export const loginUser = async (userData: Record<string, unknown>) => {
   }
 };
 
+export const forgetPassword = async (userData: Record<string, unknown>) => {
+  try {
+    const { data } = await axiosInstance.post("/auth/forget-password", userData);
+    // if (data.success) {
+    //   cookies().set("accessToken", data?.data?.accessToken);
+    //   // cookies().set("refreshToken", data?.data?.refreshToken);
+    // }
+
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+export const resetPassword = async (userData: Record<string, unknown>) => {
+  try {
+    const { token, ...newData } = userData;
+    if (typeof token === 'string') {
+      await cookies().set("accessToken", token);
+    }
+
+    const { data } = await axiosInstance.post("/auth/reset-password", newData);
+
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+
 export const logout = () => {
   cookies().delete("accessToken");
   cookies().delete("refreshToken");

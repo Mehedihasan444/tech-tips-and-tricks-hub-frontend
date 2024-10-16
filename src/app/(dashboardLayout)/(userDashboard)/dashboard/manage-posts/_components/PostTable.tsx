@@ -11,10 +11,10 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import { useCallback, useMemo, useState } from "react";
-import { Eye, Trash2 } from "lucide-react";
+import { Eye } from "lucide-react";
 import Link from "next/link";
 import UpdatePost from "./modal/UpdatePost";
-import { useDeletePost } from "@/hooks/post.hook";
+import DeleteConfirmationModal from "@/app/(dashboardLayout)/components/modal/ConfirmModal";
 
 const columns = [
   { name: "TITLE", uid: "title" },
@@ -35,7 +35,7 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
   const [page, setPage] = useState<number>(1);
   const rowsPerPage = 4;
 
-  const { mutate: handleDeletePost } = useDeletePost(); // Use update post hook
+  // const { mutate: handleDeletePost } = useDeletePost(); // Use update post hook
 
   const sortedPosts = useMemo(() => {
     if (!sortedBy) return posts;
@@ -102,13 +102,15 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
                   </span>
                 </Link>
               </Tooltip>
-            {/* update modal */}
-                <UpdatePost post={post} />
-              <Tooltip color="danger" content="Delete post">
+              {/* update modal */}
+              <UpdatePost post={post} />
+              {/* post delete modal */}
+              <DeleteConfirmationModal item={post} title="post" />
+              {/* <Tooltip color="danger" content="Delete post">
                 <span onClick={()=>handleDeletePost({postId:post._id})} className="text-lg text-danger cursor-pointer active:opacity-50">
                   <Trash2 />
                 </span>
-              </Tooltip>
+              </Tooltip> */}
             </div>
           );
 

@@ -7,7 +7,7 @@ const Media = ({ posts }: { posts: TPost[] }) => {
   const images = posts?.flatMap((post: TPost) => post.images ?? []);
 
   return (
-    <div className="bg-default-50 shadow-md rounded-lg p-6 mb-6">
+    <div className="bg-default-50 shadow-md rounded-lg p-6 mb-6 ">
       <div className="flex justify-between items-center gap-5 mb-4">
         <h2 className="text-xl font-semibold ">Media</h2>
         <Button

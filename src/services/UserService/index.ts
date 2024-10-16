@@ -43,12 +43,28 @@ export const updateUser = async (
   userId: string
 ): Promise<any> => {
   try {
+    const { data } = await axiosInstance.put(`/users/${userId}`, userData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    revalidateTag("users");
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to update user");
+  }
+};
+export const updateProfilePhoto = async (userData: FormData): Promise<any> => {
+  try {
     const { data } = await axiosInstance.put(
-      `/users/${userId}`,
+      `/users/update-profile-photo`,
       userData,
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       }
     );

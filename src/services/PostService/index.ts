@@ -30,17 +30,14 @@ export const getPosts = async () => {
     },
   };
 
-  const res = await fetch(
-    `${envConfig.baseApi}/posts`,
-    fetchOption
-  );
+  const res = await fetch(`${envConfig.baseApi}/posts`, fetchOption);
 
   return res.json();
 };
 
 export const getPost = async (postId: string) => {
   const fetchOptions = {
-    cache: "no-store"as RequestCache,
+    cache: "no-store" as RequestCache,
   };
 
   const res = await fetch(`${envConfig.baseApi}/posts/${postId}`, fetchOptions);
