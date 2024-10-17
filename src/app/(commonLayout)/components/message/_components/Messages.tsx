@@ -10,14 +10,14 @@ const Messages = ({
   seeMore,
   setComment,
   setText,
-  setUpdateComment
+  setUpdateComment,
 }: {
   post: TPost;
   setReplyTo: Dispatch<string>;
   setComment: Dispatch<TComment>;
   seeMore: boolean;
   setText: Dispatch<string>;
-  setUpdateComment:Dispatch<boolean>;
+  setUpdateComment: Dispatch<boolean>;
 }) => {
   const [comments, setComments] = useState<TComment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -50,8 +50,6 @@ const Messages = ({
         <div className="">
           {seeMore ? (
             <div className="">
-              {/* {comments?.map((comment: TComment) => (
-                <div key={comment._id}> */}
               {comments?.map((comment: TComment) => (
                 <Comment
                   key={comment._id}
@@ -60,10 +58,9 @@ const Messages = ({
                   setComment={setComment}
                   setText={setText}
                   setUpdateComment={setUpdateComment}
+                  post={post}
                 />
               ))}
-              {/* </div>
-              ))} */}
             </div>
           ) : (
             <div>
@@ -75,6 +72,7 @@ const Messages = ({
                   setComment={setComment}
                   setText={setText}
                   setUpdateComment={setUpdateComment}
+                  post={post}
                 />
               ))}
             </div>

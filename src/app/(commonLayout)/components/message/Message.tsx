@@ -22,6 +22,8 @@ const Message = ({ user, post }: { user: IUser; post: TPost }) => {
   const [seeMore, setSeeMore] = useState(false);
   const [comment, setComment] = useState<TComment>();
   const [updateComment, setUpdateComment] = useState(false);
+
+  // handle comment
   const handleComment = async () => {
     if (replyTo && comment) {
       const commentData = {
@@ -29,7 +31,11 @@ const Message = ({ user, post }: { user: IUser; post: TPost }) => {
         data: {
           postId: post?._id,
           commentText: text,
-          commentUser: { name: user?.name, photo: user?.profilePhoto },
+          commentUser: {
+            name: user?.name,
+            photo: user?.profilePhoto,
+            nickName: user?.nickName as string,
+          },
           createdAt: new Date(),
         },
       };
@@ -45,6 +51,7 @@ const Message = ({ user, post }: { user: IUser; post: TPost }) => {
           commentUser: {
             name: comment?.commentUser.name,
             photo: comment?.commentUser.photo,
+            nickName: user?.nickName as string,
           },
           createdAt: new Date(),
         },
@@ -55,7 +62,11 @@ const Message = ({ user, post }: { user: IUser; post: TPost }) => {
       const commentData = {
         postId: post?._id,
         commentText: text,
-        commentUser: { name: user?.name, photo: user?.profilePhoto },
+        commentUser: {
+          name: user?.name,
+          photo: user?.profilePhoto,
+          nickName: user?.nickName as string,
+        },
         createdAt: new Date(),
       };
       handleCreateComment(commentData);

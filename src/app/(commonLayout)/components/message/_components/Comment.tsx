@@ -2,20 +2,24 @@ import { TComment } from "@/types/TComment";
 import Image from "next/image";
 import React, { Dispatch } from "react";
 import CommentMenu from "./CommentMenu";
+import { TPost } from "@/types/TPost";
 
-const Comment = ({
+const Comment = async ({
   comment,
   setReplyTo,
   setComment,
   setText,
-  setUpdateComment
+  setUpdateComment,
+  post
 }: {
   comment: TComment;
   setReplyTo: Dispatch<string>;
   setComment: Dispatch<TComment>;
   setText: Dispatch<string>;
-  setUpdateComment:Dispatch<boolean>;
+  setUpdateComment: Dispatch<boolean>;
+  post:TPost
 }) => {
+ 
   return (
     <div className="flex flex-col gap-2 mt-1">
       {/* Render the main comment */}
@@ -30,12 +34,14 @@ const Comment = ({
           />
         </div>
         <div>
+         
           <CommentMenu
             comment={comment}
             setReplyTo={setReplyTo}
             setComment={setComment}
             setText={setText}
             setUpdateComment={setUpdateComment}
+            post={post}
           />
         </div>
       </div>
@@ -51,6 +57,7 @@ const Comment = ({
               setComment={setComment}
               setUpdateComment={setUpdateComment}
               setText={setText}
+              post={post}
             />
           ))}
         </div>

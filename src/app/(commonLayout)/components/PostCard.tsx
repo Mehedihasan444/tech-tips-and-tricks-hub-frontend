@@ -18,7 +18,7 @@ const CHARACTER_LIMIT = 430; // Set a character limit for description
 const PostCard = ({ post }: { post: any }) => {
   const [messageOpen, setMessageOpen] = useState(false);
   const [numberOfComments, setNumberOfComments] = useState(0);
-
+// const [loading,setLoading] = useState(true)
   // current login user
   const { user: loggedInUser } = useUser();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -68,6 +68,7 @@ const PostCard = ({ post }: { post: any }) => {
       try {
         const { data } = await getAllCommentsOfASinglePost(post._id);
         setNumberOfComments(data?.length);
+        // setLoading(false)
       } catch (error) {
         console.error("Failed to fetch comments:", error);
       }

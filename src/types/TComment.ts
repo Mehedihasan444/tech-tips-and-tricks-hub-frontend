@@ -7,6 +7,7 @@ export type TComment = {
   commentUser: {
     name: string;
     photo: string;
+    nickName: string;
   };
   createdAt: string;
   children: any;

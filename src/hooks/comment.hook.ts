@@ -9,6 +9,7 @@ export type TCommentCreate = {
   commentUser: {
     name: string;
     photo: string;
+    nickName: string;
   };
   createdAt: Date;
 };
@@ -33,6 +34,7 @@ export type TReplyComment = {
     commentUser: {
       name: string;
       photo: string;
+      nickName: string;
     };
     createdAt: Date;
   };

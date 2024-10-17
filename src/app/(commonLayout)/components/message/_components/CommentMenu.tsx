@@ -9,22 +9,26 @@ import {
 import { Ellipsis } from "lucide-react";
 import { TComment } from "@/types/TComment";
 import { useDeleteComment } from "@/hooks/comment.hook";
+import { useUser } from "@/context/user.provider";
+import { TPost } from "@/types/TPost";
 
 const CommentMenu = ({
   comment,
   setReplyTo,
   setComment,
   setText,
-  setUpdateComment
+  setUpdateComment,
+  post,
 }: {
   comment: TComment;
   setReplyTo: Dispatch<string>;
   setComment: Dispatch<TComment>;
   setText: Dispatch<string>;
   setUpdateComment: Dispatch<boolean>;
+  post: TPost;
 }) => {
   const { mutate: deleteComment } = useDeleteComment();
-  
+  const { user } = useUser();
   const handleDelete = (commentId: string, postId: string) => {
     // delete comment logic here
     console.log(commentId, postId);
@@ -33,7 +37,7 @@ const CommentMenu = ({
   const handleEdit = () => {
     setText(comment.commentText);
     setComment(comment);
-    setUpdateComment(true)
+    setUpdateComment(true);
   };
   const handleReply = () => {
     if (comment) {
@@ -49,31 +53,61 @@ const CommentMenu = ({
           <h3 className="font-semibold text-sm">
             {comment?.commentUser?.name}
           </h3>
-          <Dropdown size="sm">
-            <DropdownTrigger>
-              <button>
-                <Ellipsis size={16} />
-              </button>
-            </DropdownTrigger>
-            <DropdownMenu>
-              <DropdownItem
-                key="delete"
-                color="danger"
-                className="text-danger"
-                onClick={() => handleDelete(comment?._id, comment?.postId)}
-              >
-                Delete
-              </DropdownItem>
-              <DropdownItem
-                key="edit"
-                color="default"
-                className=""
-                onClick={handleEdit}
-              >
-                Edit
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          {user?.nickName == post?.author?.nickName ? (
+            <Dropdown size="sm">
+              <DropdownTrigger>
+                <button>
+                  <Ellipsis size={16} />
+                </button>
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownItem
+                  key="delete"
+                  color="danger"
+                  className="text-danger"
+                  onClick={() => handleDelete(comment?._id, comment?.postId)}
+                >
+                  Delete
+                </DropdownItem>
+                <DropdownItem
+                  key="edit"
+                  color="default"
+                  className=""
+                  onClick={handleEdit}
+                >
+                  Edit
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          ) : user?.nickName == comment?.commentUser?.nickName ? (
+            <Dropdown size="sm">
+              <DropdownTrigger>
+                <button>
+                  <Ellipsis size={16} />
+                </button>
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownItem
+                  key="delete"
+                  color="danger"
+                  className="text-danger"
+                  onClick={() => handleDelete(comment?._id, comment?.postId)}
+                >
+                  Delete
+                </DropdownItem>
+                <DropdownItem
+                  key="edit"
+                  color="default"
+                  className=""
+                  onClick={handleEdit}
+                >
+                  Edit
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          ) : (
+            ""
+          )}
         </div>
         <p className="text-sm text-default-600">{comment.commentText}</p>
       </div>
