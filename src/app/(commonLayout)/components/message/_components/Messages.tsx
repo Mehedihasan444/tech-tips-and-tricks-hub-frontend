@@ -4,18 +4,20 @@ import { TPost } from "@/types/TPost";
 import { TComment } from "@/types/TComment";
 import Comment from "./Comment";
 
-
 const Messages = ({
   post,
   setReplyTo,
   seeMore,
   setComment,
- 
+  setText,
+  setUpdateComment
 }: {
-  post:TPost;
+  post: TPost;
   setReplyTo: Dispatch<string>;
   setComment: Dispatch<TComment>;
   seeMore: boolean;
+  setText: Dispatch<string>;
+  setUpdateComment:Dispatch<boolean>;
 }) => {
   const [comments, setComments] = useState<TComment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -25,7 +27,7 @@ const Messages = ({
       try {
         const { data } = await getAllCommentsOfASinglePost(post?._id);
         setComments(data || []);
-        console.log(data)
+        console.log(data);
       } catch (error) {
         console.error("Failed to fetch comments:", error);
       } finally {
@@ -36,10 +38,10 @@ const Messages = ({
     if (post?._id) {
       fetchComments(); // Call the API to fetch comments only once when the component mounts
     }
-  }, [post]); 
+  }, [post]);
 
   if (loading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   return (
@@ -50,28 +52,32 @@ const Messages = ({
             <div className="">
               {/* {comments?.map((comment: TComment) => (
                 <div key={comment._id}> */}
-                {comments?.map((comment: TComment) => (
-                  <Comment
-                    key={comment._id}
-                    comment={comment}
-                    setReplyTo={setReplyTo}
-                    setComment={setComment}
-                  />
-                ))}
+              {comments?.map((comment: TComment) => (
+                <Comment
+                  key={comment._id}
+                  comment={comment}
+                  setReplyTo={setReplyTo}
+                  setComment={setComment}
+                  setText={setText}
+                  setUpdateComment={setUpdateComment}
+                />
+              ))}
               {/* </div>
               ))} */}
             </div>
           ) : (
-            <div >
-                {comments?.slice(0,2)?.map((comment: TComment) => (
-                  <Comment
-                    key={comment._id}
-                    comment={comment}
-                    setReplyTo={setReplyTo}
-                    setComment={setComment}
-                  />
-                ))}
-              </div>
+            <div>
+              {comments?.slice(0, 2)?.map((comment: TComment) => (
+                <Comment
+                  key={comment._id}
+                  comment={comment}
+                  setReplyTo={setReplyTo}
+                  setComment={setComment}
+                  setText={setText}
+                  setUpdateComment={setUpdateComment}
+                />
+              ))}
+            </div>
           )}
         </div>
       ) : (

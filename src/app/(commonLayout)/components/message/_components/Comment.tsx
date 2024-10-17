@@ -7,10 +7,14 @@ const Comment = ({
   comment,
   setReplyTo,
   setComment,
+  setText,
+  setUpdateComment
 }: {
   comment: TComment;
   setReplyTo: Dispatch<string>;
   setComment: Dispatch<TComment>;
+  setText: Dispatch<string>;
+  setUpdateComment:Dispatch<boolean>;
 }) => {
   return (
     <div className="flex flex-col gap-2 mt-1">
@@ -30,6 +34,8 @@ const Comment = ({
             comment={comment}
             setReplyTo={setReplyTo}
             setComment={setComment}
+            setText={setText}
+            setUpdateComment={setUpdateComment}
           />
         </div>
       </div>
@@ -43,6 +49,8 @@ const Comment = ({
               comment={childComment}
               setReplyTo={setReplyTo}
               setComment={setComment}
+              setUpdateComment={setUpdateComment}
+              setText={setText}
             />
           ))}
         </div>

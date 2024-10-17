@@ -43,6 +43,42 @@ export const replyComment = async (
     throw new Error("Failed to post comment");
   }
 };
+export const updateComment = async (
+  commentData: TReplyComment
+): Promise<any> => {
+  try {
+    const { data } = await axiosInstance.put("/comments", commentData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    revalidateTag("comments");
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to post comment");
+  }
+};
+export const deleteComment = async (commentId: string, postId: string): Promise<any> => {
+  try {
+    const { data } = await axiosInstance.delete(`/comments`, {
+      params: { commentId, postId },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    revalidateTag("comments");
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to delete comment");
+  }
+};
+
 
 export const getAllCommentsOfASinglePost = async (postId: string) => {
 
@@ -60,4 +96,3 @@ export const getAllCommentsOfASinglePost = async (postId: string) => {
     
       return res.json();
   };
-  

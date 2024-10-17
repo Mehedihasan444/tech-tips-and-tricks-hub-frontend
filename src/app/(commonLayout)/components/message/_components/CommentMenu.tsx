@@ -8,27 +8,33 @@ import {
 } from "@nextui-org/react";
 import { Ellipsis } from "lucide-react";
 import { TComment } from "@/types/TComment";
-const items = [
-  {
-    key: "edit",
-    label: "Edit comment",
-  },
-  {
-    key: "delete",
-    label: "Delete comment",
-  },
-];
+import { useDeleteComment } from "@/hooks/comment.hook";
+
 const CommentMenu = ({
   comment,
   setReplyTo,
   setComment,
+  setText,
+  setUpdateComment
 }: {
   comment: TComment;
   setReplyTo: Dispatch<string>;
   setComment: Dispatch<TComment>;
+  setText: Dispatch<string>;
+  setUpdateComment: Dispatch<boolean>;
 }) => {
-  // const { mutate } = useCreateComment();
-
+  const { mutate: deleteComment } = useDeleteComment();
+  
+  const handleDelete = (commentId: string, postId: string) => {
+    // delete comment logic here
+    console.log(commentId, postId);
+    deleteComment({ commentId, postId });
+  };
+  const handleEdit = () => {
+    setText(comment.commentText);
+    setComment(comment);
+    setUpdateComment(true)
+  };
   const handleReply = () => {
     if (comment) {
       setReplyTo(comment?.commentUser?.name);
@@ -49,16 +55,23 @@ const CommentMenu = ({
                 <Ellipsis size={16} />
               </button>
             </DropdownTrigger>
-            <DropdownMenu aria-label="Dynamic Actions" items={items}>
-              {(item) => (
-                <DropdownItem
-                  key={item.key}
-                  color={item.key === "delete" ? "danger" : "default"}
-                  className={item.key === "delete" ? "text-danger" : ""}
-                >
-                  {item.label}
-                </DropdownItem>
-              )}
+            <DropdownMenu>
+              <DropdownItem
+                key="delete"
+                color="danger"
+                className="text-danger"
+                onClick={() => handleDelete(comment?._id, comment?.postId)}
+              >
+                Delete
+              </DropdownItem>
+              <DropdownItem
+                key="edit"
+                color="default"
+                className=""
+                onClick={handleEdit}
+              >
+                Edit
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -66,7 +79,7 @@ const CommentMenu = ({
       </div>
       <div className="flex justify-between gap-5 px-3">
         <span className="text-xs font-semibold text-default-500">11h</span>
-        <button className="text-xs font-semibold text-default-500">Like</button>
+        {/* <button className="text-xs font-semibold text-default-500">Like</button> */}
         <button
           onClick={handleReply}
           className="text-xs font-semibold text-default-500"

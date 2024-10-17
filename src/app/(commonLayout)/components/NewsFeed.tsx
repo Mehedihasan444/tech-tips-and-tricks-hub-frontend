@@ -31,6 +31,7 @@ const NewsFeed = ({ posts }: { posts: TPost[] }) => {
             <h1 className="text-lg font-semibold">NO data found!</h1>
           </div>
         )}
+        <h2 className="text-center my-5">No more data available</h2>
       </section>
     </>
   );

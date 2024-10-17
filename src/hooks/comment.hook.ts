@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createComment, replyComment } from "@/services/CommentService";
+import { createComment, deleteComment, replyComment, updateComment } from "@/services/CommentService";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -43,6 +43,30 @@ export const useReplyComment = () => {
     mutationFn: async (commentData) => await replyComment(commentData), // Destructure the input
     onSuccess: () => {
       toast.success("Reply posted successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+};
+export const useUpdateComment = () => {
+  return useMutation<any, Error, TReplyComment>({
+    mutationKey: ["UPDATE_COMMENT"],
+    mutationFn: async (commentData) => await updateComment(commentData), // Destructure the input
+    onSuccess: () => {
+      toast.success("Comment updated successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+};
+export const useDeleteComment = () => {
+  return useMutation<any, Error, {commentId:string,postId:string}>({
+    mutationKey: ["DELETE_COMMENT"],
+    mutationFn: async ({commentId,postId}) => await deleteComment(commentId,postId), // Destructure the input
+    onSuccess: () => {
+      toast.success("Deleted comment successfully");
     },
     onError: (error) => {
       toast.error(error.message);
