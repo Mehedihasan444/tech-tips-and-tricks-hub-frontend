@@ -18,7 +18,7 @@ const CHARACTER_LIMIT = 430; // Set a character limit for description
 const PostCard = ({ post }: { post: any }) => {
   const [messageOpen, setMessageOpen] = useState(false);
   const [numberOfComments, setNumberOfComments] = useState(0);
-// const [loading,setLoading] = useState(true)
+  // const [loading,setLoading] = useState(true)
   // current login user
   const { user: loggedInUser } = useUser();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -74,7 +74,7 @@ const PostCard = ({ post }: { post: any }) => {
       }
     };
 
-    if (post) {
+    if (post._id) {
       fetchComments(); // Call the API to fetch comments only once when the component mounts
     }
   }, [post, setNumberOfComments]); // Depend on postId so it only re-fetches if postId changes

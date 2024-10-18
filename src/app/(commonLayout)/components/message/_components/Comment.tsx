@@ -4,22 +4,21 @@ import React, { Dispatch } from "react";
 import CommentMenu from "./CommentMenu";
 import { TPost } from "@/types/TPost";
 
-const Comment = async ({
+const Comment = ({
   comment,
   setReplyTo,
   setComment,
   setText,
   setUpdateComment,
-  post
+  post,
 }: {
   comment: TComment;
   setReplyTo: Dispatch<string>;
   setComment: Dispatch<TComment>;
   setText: Dispatch<string>;
   setUpdateComment: Dispatch<boolean>;
-  post:TPost
+  post: TPost;
 }) => {
- 
   return (
     <div className="flex flex-col gap-2 mt-1">
       {/* Render the main comment */}
@@ -34,7 +33,6 @@ const Comment = async ({
           />
         </div>
         <div>
-         
           <CommentMenu
             comment={comment}
             setReplyTo={setReplyTo}

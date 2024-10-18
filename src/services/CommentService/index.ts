@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 "use server";
-
 import axiosInstance from "@/config/axios.config";
 import envConfig from "@/config/envConfig";
 import { TCommentCreate, TReplyComment } from "@/hooks/comment.hook";
@@ -61,7 +60,10 @@ export const updateComment = async (
     throw new Error("Failed to post comment");
   }
 };
-export const deleteComment = async (commentId: string, postId: string): Promise<any> => {
+export const deleteComment = async (
+  commentId: string,
+  postId: string
+): Promise<any> => {
   try {
     const { data } = await axiosInstance.delete(`/comments`, {
       params: { commentId, postId },
@@ -79,20 +81,24 @@ export const deleteComment = async (commentId: string, postId: string): Promise<
   }
 };
 
+// export const getAllCommentsOfASinglePost = async (postId: string) => {
+//   const { data } = await axiosInstance.get(`/comments?postId=${postId}`);
+// console.log(data.data)
+//   return data.data;
+// };
 
 export const getAllCommentsOfASinglePost = async (postId: string) => {
-
-    const fetchOption = {
-        next: {
-          cache: "force-cache" as RequestCache,
-          tags: ["comments"],
-        },
-      };
-    
-      const res = await fetch(
-        `${envConfig.baseApi}/comments?postId=${postId}`,
-        fetchOption
-      );
-    
-      return res.json();
+  const fetchOption = {
+    next: {
+      cache: "force-cache" as RequestCache,
+      tags: ["comments"],
+    },
   };
+
+  const res = await fetch(
+    `${envConfig.baseApi}/comments?postId=${postId}`,
+    fetchOption
+  );
+
+  return res.json();
+};

@@ -1,3 +1,4 @@
+"use client"
 import { getAllCommentsOfASinglePost } from "@/services/CommentService";
 import React, { Dispatch, useEffect, useState } from "react";
 import { TPost } from "@/types/TPost";
@@ -27,7 +28,7 @@ const Messages = ({
       try {
         const { data } = await getAllCommentsOfASinglePost(post?._id);
         setComments(data || []);
-        console.log(data);
+        setLoading(false);
       } catch (error) {
         console.error("Failed to fetch comments:", error);
       } finally {
@@ -45,7 +46,7 @@ const Messages = ({
   }
 
   return (
-    <div className="max-h-40 overflow-y-auto">
+    <div className="pl-7">
       {comments?.length > 0 ? (
         <div className="">
           {seeMore ? (

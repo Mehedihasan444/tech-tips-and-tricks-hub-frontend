@@ -14,14 +14,15 @@ import { TPost } from "@/types/TPost";
 import { TComment } from "@/types/TComment";
 
 const Message = ({ user, post }: { user: IUser; post: TPost }) => {
+  const [comment, setComment] = useState<TComment>();
   const [text, setText] = useState("");
+  const [replyTo, setReplyTo] = useState("");
+  const [seeMore, setSeeMore] = useState(false);
+  const [updateComment, setUpdateComment] = useState(false);
+  // data fetch or manipulate
   const { mutate: handleCreateComment } = useCreateComment();
   const { mutate: handleReplyComment } = useReplyComment();
   const { mutate: handleUpdateComment } = useUpdateComment();
-  const [replyTo, setReplyTo] = useState("");
-  const [seeMore, setSeeMore] = useState(false);
-  const [comment, setComment] = useState<TComment>();
-  const [updateComment, setUpdateComment] = useState(false);
 
   // handle comment
   const handleComment = async () => {
@@ -39,7 +40,7 @@ const Message = ({ user, post }: { user: IUser; post: TPost }) => {
           createdAt: new Date(),
         },
       };
-      handleReplyComment(commentData);
+       handleReplyComment(commentData);
       setText("");
     } else if (updateComment && comment) {
       // edit comment logic here
@@ -57,7 +58,7 @@ const Message = ({ user, post }: { user: IUser; post: TPost }) => {
         },
       };
 
-      handleUpdateComment(updateCommentData);
+       handleUpdateComment(updateCommentData);
     } else {
       const commentData = {
         postId: post?._id,
@@ -69,11 +70,11 @@ const Message = ({ user, post }: { user: IUser; post: TPost }) => {
         },
         createdAt: new Date(),
       };
-      handleCreateComment(commentData);
+      await handleCreateComment(commentData);
       setText(""); // Clear the text after submission
     }
   };
-
+  
   return (
     <div className="">
       <button className="" onClick={() => setSeeMore(!seeMore)}>
@@ -91,41 +92,44 @@ const Message = ({ user, post }: { user: IUser; post: TPost }) => {
       {/* comment textarea */}
       <div className="mt-2 flex gap-2">
         <div className="flex  ">
-          {" "}
           <Image
             src={user?.profilePhoto}
-            alt={user.name}
+            alt={user?.name}
             width={30}
             height={30}
             className="rounded-full h-[30px] w-[30px] object-cover"
           />
         </div>
         <div className="flex-1">
-          <Textarea
-            value={text}
-            label={
-              replyTo ? (
-                <span className="text-xs text-primary">
-                  replying to @{replyTo}
-                </span>
-              ) : null
-            }
-            variant="faded"
-            placeholder="Write a comment"
-            disableAnimation
-            disableAutosize
-            onChange={(e) => setText(e.target.value)}
-            endContent={
-              text && (
-                <button onClick={() => handleComment()}>
-                  <SendHorizonal className="text-primary" />
-                </button>
-              )
-            }
-            classNames={{
-              input: "resize-y",
-            }}
-          />
+   
+
+            <Textarea
+              value={text} // Use undefined instead of null
+              onChange={(e) => setText(e.target.value)}
+              label={
+                replyTo ? (
+                  <span className="text-xs text-primary">
+                    replying to @{replyTo}
+                  </span>
+                ) : null
+              }
+              variant="faded"
+              placeholder="Write a comment"
+              disableAnimation
+              disableAutosize
+              endContent={
+                text && (
+                  <button onClick={() => handleComment()}>
+                    <SendHorizonal className="text-primary" />
+                  </button>
+                )
+              }
+              classNames={{
+                input: "resize-y",
+              }}
+            />
+  
+         
         </div>
       </div>
     </div>
