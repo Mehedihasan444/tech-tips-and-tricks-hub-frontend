@@ -25,6 +25,8 @@ const PostCard = ({ post }: { post: any }) => {
   const { mutate: handleUpdatePost } = useUpdatePost();
   const user = post?.author;
   const router = useRouter();
+
+  
   // Function to handle sharing via Web Share API
   const handleShare = () => {
     if (navigator.share) {

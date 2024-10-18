@@ -22,7 +22,7 @@ export const createPost = async (formData: FormData): Promise<any> => {
   }
 };
 
-export const getPosts = async () => {
+export const getPosts = async (page=1) => {
   const fetchOption = {
     next: {
       cache: "force-cache" as RequestCache,
@@ -30,7 +30,7 @@ export const getPosts = async () => {
     },
   };
 
-  const res = await fetch(`${envConfig.baseApi}/posts`, fetchOption);
+  const res = await fetch(`${envConfig.baseApi}/posts?page=${page}&limit=2`, fetchOption);
 
   return res.json();
 };
