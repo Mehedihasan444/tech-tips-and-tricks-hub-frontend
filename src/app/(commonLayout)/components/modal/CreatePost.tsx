@@ -110,19 +110,17 @@ export default function CreatePost() {
 
     formData.append("data", JSON.stringify(postData));
     if (pictures) {
-      
       pictures.forEach((file) => {
         formData.append("postImages", file);
       });
     }
-
 
     handleCreatePost(formData);
   };
 
   return (
     <>
-      <Button onPress={onOpen} color="secondary">
+      <Button onPress={onOpen} color="secondary" id="CreatePost">
         Create Post
       </Button>
       <Modal
@@ -133,22 +131,22 @@ export default function CreatePost() {
         radius="lg"
         size={"3xl"}
         classNames={{
-          body: "py-6",
+          body: "py-6 ",
           backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
           base: "border rounded-md  text-primary",
           header: "border-b-[1px] ",
           footer: "border-t-[1px] ",
-          closeButton: "hover:bg-white/5 active:bg-white/10",
+          closeButton: "hover:bg-default-50/5 active:bg-default-50/10",
         }}
       >
-        <ModalContent>
+        <ModalContent className="min-h-[90vh] overflow-y-auto">
           {(onClose) => (
             <>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} className=" h-full">
                 <ModalHeader className="flex flex-col gap-1">
                   Create Your Post
                 </ModalHeader>
-                <ModalBody className="flex flex-col mb-2 gap-4 h-[450px] overflow-y-scroll">
+                <ModalBody className="flex flex-col mb-2 gap-4  ">
                   <div className="">
                     {/* Post title */}
                     <div className="mb-6 ">
@@ -187,7 +185,6 @@ export default function CreatePost() {
                       <Checkbox
                         isSelected={isPremium}
                         onValueChange={setIsPremium}
-                      
                       >
                         Premium
                       </Checkbox>
@@ -225,7 +222,7 @@ export default function CreatePost() {
                     >
                       {/* Toolbar (Sticky at the top) */}
                       <div
-                        className="sticky top-0 bg-white z-10"
+                        className="sticky top-0 bg-default-50 z-10"
                         style={{
                           borderBottom: "1px solid #ccc", // Add border to separate toolbar from content
                         }}
@@ -265,7 +262,7 @@ export default function CreatePost() {
                       Close
                     </Button>
                     <Button
-                      className="bg-primary text-white shadow-lg shadow-indigo-500/20"
+                      className="bg-primary text-default-50 shadow-lg shadow-indigo-500/20"
                       type="submit"
                       // onPress={() => {
                       //   onClose();

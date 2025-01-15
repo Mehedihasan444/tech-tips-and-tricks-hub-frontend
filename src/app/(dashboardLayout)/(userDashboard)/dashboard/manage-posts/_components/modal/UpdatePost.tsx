@@ -138,7 +138,7 @@ export default function UpdatePost({ post }: { post: any }) {
           base: "border rounded-md  ",
           header: "border-b-[1px] ",
           footer: "border-t-[1px] ",
-          closeButton: "hover:bg-white/5 active:bg-white/10",
+          closeButton: "hover:bg-default-50/5 active:bg-default-50/10",
         }}
       >
         <ModalContent>
@@ -209,7 +209,7 @@ export default function UpdatePost({ post }: { post: any }) {
                   </div>
 
                   <div className="border border-gray-500 rounded-md p-2 overflow-hidden flex flex-col">
-                    <div className="sticky top-0 bg-white z-10">
+                    <div className="sticky top-0 bg-default-50 z-10">
                       {/* Quill toolbar automatically appears here */}
                     </div>
 
@@ -254,7 +254,7 @@ export default function UpdatePost({ post }: { post: any }) {
                     Close
                   </Button>
                   <Button
-                    className="bg-primary text-white shadow-lg shadow-indigo-500/20"
+                    className="bg-primary text-default-50 shadow-lg shadow-indigo-500/20"
                     type="submit"
                   >
                     Update

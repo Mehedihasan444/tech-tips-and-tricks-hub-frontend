@@ -12,13 +12,13 @@ const PaymentInfoPage = async () => {
   const { data: payments } = await getPayments("");
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="w-full h-full max-w-4xl bg-white shadow-md rounded-lg p-8">
+      <div className="w-full h-full max-w-4xl bg-default-50 shadow-md rounded-lg p-8">
         {/* Page Title */}
         <PageTitle title="Payment Information"></PageTitle>
 
         {/* Table Section */}
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border">
+          <table className="min-w-full bg-default-50 border">
             <thead>
               <tr>
                 <th className="px-4 py-2 border">Transaction ID</th>
@@ -31,7 +31,7 @@ const PaymentInfoPage = async () => {
             <tbody>
               {payments && payments.length > 0 ? (
                 payments.map((payment: TPayment, index: number) => (
-                  <tr key={index} className="text-gray-700">
+                  <tr key={index} className="bg-default-700">
                     <td className="border px-4 py-2">
                       {payment.transactionId}
                     </td>
@@ -49,7 +49,7 @@ const PaymentInfoPage = async () => {
                 <tr>
                   <td
                     colSpan={6}
-                    className="text-center px-4 py-2 text-gray-500"
+                    className="text-center px-4 py-2 bg-default-500"
                   >
                     No payment data available.
                   </td>
@@ -60,7 +60,7 @@ const PaymentInfoPage = async () => {
         </div>
 
         {/* Footer Information */}
-        <div className="text-center mt-6 text-sm text-gray-500">
+        <div className="text-center mt-6 text-sm bg-default-500">
           If you have any issues with payments, please contact support at{" "}
           <a
             href="mailto:support@technest.com"

@@ -33,9 +33,9 @@ export default function DashboardLayout({
   // }, [user, router, pathname]);
   return (
     <div>
-      {pathname !== "/login" && pathname != "/register" && user && (
+      {/* {pathname !== "/login" && pathname != "/register" && user && (
         <NavigationBar></NavigationBar>
-      )}
+      )} */}
       {children}
       {/* {pathname !== "/login" && pathname != "/register" && user && (
         // <Footer></Footer>

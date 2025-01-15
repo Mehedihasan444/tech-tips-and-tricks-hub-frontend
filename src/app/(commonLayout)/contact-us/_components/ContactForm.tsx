@@ -3,8 +3,8 @@ import React from "react";
 import { Input, Textarea, Button } from "@nextui-org/react";
 const ContactForm = () => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg">
-      <h3 className="text-2xl font-semibold text-gray-800 mb-4">
+    <div className="bg-default-50 p-6 rounded-lg shadow-lg">
+      <h3 className="text-2xl font-semibold  mb-4">
         Get in Touch
       </h3>
       <form className="space-y-4">
@@ -14,7 +14,7 @@ const ContactForm = () => {
           placeholder="Enter your full name"
           required
           fullWidth
-          className="text-gray-800"
+          className=""
         />
         <Input
           label="Your Email"
@@ -23,7 +23,7 @@ const ContactForm = () => {
           required
           fullWidth
           type="email"
-          className="text-gray-800"
+          className=""
         />
         <Input
           label="Subject"
@@ -31,7 +31,7 @@ const ContactForm = () => {
           placeholder="Enter subject"
           required
           fullWidth
-          className="text-gray-800"
+          className=""
         />
         <Textarea
           label="Your Message"
@@ -40,9 +40,9 @@ const ContactForm = () => {
           required
           fullWidth
           rows={6}
-          className="text-gray-800"
+          className=""
         />
-        <Button color="primary" className="w-full bg-teal-600 text-white">
+        <Button color="primary" className="w-full bg-teal-600 text-default-50">
           Send Message
         </Button>
       </form>

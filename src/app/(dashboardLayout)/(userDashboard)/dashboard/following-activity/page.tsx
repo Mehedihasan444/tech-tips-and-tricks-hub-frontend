@@ -46,7 +46,7 @@ const activities = [
 
 const ActivityPage = () => {
   return (
-    <div className="container mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div className="container mx-auto p-6 bg-default-50 shadow-lg rounded-lg">
       <h1 className="text-2xl  mb-6 border-l-5 border-primary font-bold pl-5">Recent Activities</h1>
 
       <div className="space-y-4">
@@ -57,11 +57,11 @@ const ActivityPage = () => {
               <div>
                 <CardHeader className="flex justify-between">
                   <span className="font-semibold">{activity.action}</span>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm bg-default-500">
                     {new Date(activity.date).toLocaleDateString()}
                   </span>
                 </CardHeader>
-                <p className="text-gray-700">{activity.description}</p>
+                <p className="bg-default-700">{activity.description}</p>
               </div>
             </CardBody>
           </Card>

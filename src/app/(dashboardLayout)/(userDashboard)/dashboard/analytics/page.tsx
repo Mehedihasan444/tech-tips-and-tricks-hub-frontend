@@ -37,7 +37,7 @@ const AnalyticsPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 bg-white  rounded-lg">
+    <div className="container mx-auto p-6 bg-default-50  rounded-lg">
       <h1 className="text-2xl mb-6  border-l-5 border-primary font-bold pl-5">User Analytics</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

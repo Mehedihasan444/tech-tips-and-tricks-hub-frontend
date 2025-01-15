@@ -11,55 +11,40 @@ import {
   Tooltip,
   User,
 } from "@nextui-org/react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Eye } from "lucide-react";
 import Link from "next/link";
-
 import DeleteConfirmationModal from "@/app/(dashboardLayout)/components/modal/ConfirmModal";
+import { columns } from "./constants";
+import { getPosts } from "@/services/PostService";
 
-const columns = [
-  { name: "TITLE", uid: "title" },
-  { name: "CATEGORY", uid: "category" },
-  { name: "LIKES", uid: "likes" },
-  { name: "DISLIKES", uid: "dislikes" },
-  { name: "AUTHOR", uid: "author" },
-  { name: "ACTIONS", uid: "actions" },
-];
+const PostTable = () => {
+  const [posts, setPosts] = useState<TPost[]>([]);
+  const [page, setPage] = useState<number>(1); // For tracking the current page
+  const [numberOfPages, setNumberOfPages] = useState<number>(1); // Total pages
+  const rowsPerPage = 4; // Number of rows per page
 
-type SortOrder = "asc" | "desc";
+  // Fetch data on initial render and when the page changes
+  const fetchData = async (page: number) => {
+    try {
+      const { data } = await getPosts(page, rowsPerPage);
+      const { data:fetchedPosts, pageCount } = data || {};
+      setNumberOfPages(pageCount); // Set the number of pages
+      setPosts(fetchedPosts || []); // Set the fetched posts
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+  // Initial render and page change effect
+  useEffect(() => {
+    fetchData(page); // Fetch data when the page changes
+  }, [page]);
 
-interface SortedBy {
-  column: keyof TPost;
-  order: SortOrder;
-}
 
-const PostTable = ({ posts }: { posts: TPost[] }) => {
-  const [sortedBy, setSortedBy] = useState<SortedBy | null>(null);
-  const [page, setPage] = useState<number>(1);
-  const rowsPerPage = 4;
 
-  const sortedPosts = useMemo(() => {
-    if (!sortedBy) return posts;
-    const { column, order } = sortedBy;
-    const sortOrder = order === "asc" ? 1 : -1;
-    return [...posts].sort((a, b) => {
-      if (a[column] > b[column]) return sortOrder;
-      if (a[column] < b[column]) return -sortOrder;
-      return 0;
-    });
-  }, [posts, sortedBy]);
 
-  const pages = Math.ceil(posts?.length / rowsPerPage);
-
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-    return sortedPosts.slice(start, end);
-  }, [page, sortedPosts]);
-
-  type OmittedKeys = "content" | "images" | "tags" | "updatedAt" | "_v"; // Specify the keys you want to omit
-
-  type TPostWithoutContentAndImages = Omit<TPost, OmittedKeys>; // Create the new type
+  type OmittedKeys = "content" | "images" | "tags" | "updatedAt" | "_v";
+  type TPostWithoutContentAndImages = Omit<TPost, OmittedKeys>;
 
   const renderCell = useCallback(
     (
@@ -73,7 +58,6 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
           return (
             <div className="text-secondary">
               {typeof cellValue === "string" ? cellValue : null}
-
               <h3 className="text-default-400">
                 Posted on: {new Date(post.createdAt).toLocaleDateString()}
               </h3>
@@ -103,7 +87,7 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
           return (
             <div className="text-secondary">
               {typeof cellValue === "object" ? (
-                <div className="">
+                <div>
                   <User
                     name={cellValue?.name}
                     description={
@@ -131,45 +115,17 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
                   </span>
                 </Link>
               </Tooltip>
-              {/* post delete modal */}
               <DeleteConfirmationModal item={post} title="post" />
-              {/* <Tooltip color="danger" content="Delete post">
-
-                <span
-                  onClick={() => handleDeletePost({ postId: post._id })}
-                  className="text-lg text-danger cursor-pointer active:opacity-50"
-                >
-                  <Trash2 />
-                </span>
-              </Tooltip> */}
             </div>
           );
 
         default:
-          // Ensure any other value is directly renderable as a ReactNode
-          if (
-            typeof cellValue === "string" ||
-            typeof cellValue === "number" ||
-            typeof cellValue === "object"
-          ) {
-            return (
-              <span>{cellValue as keyof TPostWithoutContentAndImages}</span>
-            ); // Return strings or numbers directly
-          }
-          // Return null for non-renderable values
           return null;
       }
     },
     []
   );
 
-  const handleSort = (column: keyof TPost) => {
-    let order: SortOrder = "asc";
-    if (sortedBy && sortedBy.column === column && sortedBy.order === "asc") {
-      order = "desc";
-    }
-    setSortedBy({ column, order });
-  };
 
   return (
     <div>
@@ -183,8 +139,8 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
               showShadow
               color="secondary"
               page={page}
-              total={pages}
-              onChange={(page) => setPage(page)}
+              total={numberOfPages}
+              onChange={(page) => setPage(page)} // Trigger fetch on page change
             />
           </div>
         }
@@ -199,16 +155,14 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
               key={column.uid}
               align={column.uid === "actions" ? "center" : "start"}
               allowsSorting
-              onClick={() => handleSort(column.uid as keyof TPost)}
+             
             >
               {column.name}
-              {sortedBy && sortedBy.column === column.uid && (
-                <span>{sortedBy.order === "asc" ? "↑" : "↓"}</span>
-              )}
+             
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={items}>
+        <TableBody items={posts}>
           {(item) => (
             <TableRow key={item._id}>
               {(columnKey) => (

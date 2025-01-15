@@ -37,7 +37,7 @@ const AboutPage = () => {
       {/* Call to Action */}
       <section className="text-center space-y-4 my-12">
         <h2 className="text-3xl font-semibold text-teal-600">Join Us on This Tech Journey!</h2>
-        <p className="text-gray-700">
+        <p className="text-default-700">
           Whether you’re a beginner or a pro, our community has something for everyone. Let’s grow and innovate together!
         </p>
         <Button className="bg-teal-600 text-white hover:bg-teal-500" href="/contact">

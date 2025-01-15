@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 const GoogleLoginBtn = () => {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
-  
+
   return (
     <>
       <Button
@@ -16,7 +16,7 @@ const GoogleLoginBtn = () => {
         }}
         size="lg"
         type="button"
-        className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-lg font-medium text-gray-700 bg-white hover:bg-gray-50"
+        className="w-full flex items-center justify-center px-4 py-3 border border-default-300 rounded-md shadow-sm text-lg font-medium  bg-default-50 hover:bg-default-100"
       >
         <svg
           className="w-7 h-7 mr-2"

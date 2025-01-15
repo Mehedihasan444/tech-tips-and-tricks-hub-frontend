@@ -12,7 +12,7 @@ const Media = ({ posts }: { posts: TPost[] }) => {
         <h2 className="text-xl font-semibold ">Media</h2>
         <Button
           variant="ghost"
-          className="border-secondary text-secondary hover:text-white hover:bg-secondary"
+          className="border-secondary text-secondary hover:text-default-50 hover:bg-secondary"
         >
           See All
         </Button>

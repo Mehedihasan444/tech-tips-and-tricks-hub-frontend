@@ -169,7 +169,7 @@ export default function CreatePost() {
           <div className="border border-gray-500 rounded-md p-2 overflow-hidden flex flex-col">
             {/* Sticky toolbar */}
             <div
-              className="sticky top-0 bg-white z-10"
+              className="sticky top-0 bg-default-50 z-10"
               style={{ borderBottom: "1px solid #ccc" }}
             >
               {/* Quill toolbar will automatically appear here */}
@@ -208,7 +208,7 @@ export default function CreatePost() {
               Cancel
             </Button> */}
             <Button
-              className="bg-secondary text-white shadow-lg shadow-indigo-500/20"
+              className="bg-secondary text-default-50 shadow-lg shadow-indigo-500/20"
               type="submit"
             >
               Submit Post

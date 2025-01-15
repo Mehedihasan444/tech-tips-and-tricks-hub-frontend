@@ -16,7 +16,7 @@ const MyPosts = async () => {
       {/* Search and Filter Section */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-5 mb-8 space-y-4 md:space-y-0">
         <div className="flex items-center">
-          <h1 className="text-2xl border-l-5 border-primary font-bold pl-5 text-gray-800 ">
+          <h1 className="text-2xl border-l-5 border-primary font-bold pl-5 text-default-800 ">
             My Posts
           </h1>
         </div>
@@ -27,7 +27,7 @@ const MyPosts = async () => {
         {posts?.map((post: TPost) => (
           <div
             key={post._id}
-            className="bg-white rounded-lg shadow-lg overflow-hidden"
+            className="bg-default-50 rounded-lg shadow-lg overflow-hidden"
           >
             <Image
               width={300}
@@ -37,11 +37,11 @@ const MyPosts = async () => {
               className="w-full h-48 object-cover"
             />
             <div className="p-6 space-y-2">
-              <h2 className="text-2xl font-semibold text-gray-800 ">
+              <h2 className="text-2xl font-semibold text-default-800 ">
                 {post.title}
               </h2>
               <div
-                className="text-gray-600 "
+                className="text-default-600 "
                 dangerouslySetInnerHTML={{
                   __html:
                     post.content.length > 300
@@ -50,8 +50,8 @@ const MyPosts = async () => {
                 }}
               />
 
-              <p className="text-sm text-gray-500">
-                <span className="font-semibold text-sm text-gray-500">
+              <p className="text-sm text-default-500">
+                <span className="font-semibold text-sm text-default-500">
                   Posted at:{" "}
                 </span>
                 {post.createdAt.split("T")[0]}
@@ -60,13 +60,13 @@ const MyPosts = async () => {
               {/* Displaying category and tags */}
               <div className="">
                 {/* Display category */}
-                <span className="font-semibold text-sm text-gray-500">
+                <span className="font-semibold text-sm text-default-500">
                   Category:{" "}
                 </span>
-                <span className="text-sm text-gray-600">{post.category}</span>
+                <span className="text-sm text-default-600">{post.category}</span>
               </div>
               <div className="">
-                <span className="font-semibold text-sm text-gray-500">
+                <span className="font-semibold text-sm text-default-500">
                   Tags:{" "}
                 </span>
                 {/* Display tags */}
@@ -74,7 +74,7 @@ const MyPosts = async () => {
                   {post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="bg-gray-200 text-gray-700 text-xs font-medium py-1 px-2 rounded-full"
+                      className="bg-gray-200 text-default-700 text-xs font-medium py-1 px-2 rounded-full"
                     >
                       {tag}
                     </span>
@@ -83,7 +83,7 @@ const MyPosts = async () => {
               </div>
               <div className="pt-2">
                 <Link href={`/dashboard/my-posts/${post._id}`}>
-                  <button className="bg-secondary/80 hover:bg-secondary text-white py-2 px-4 rounded-lg">
+                  <button className="bg-secondary/80 hover:bg-secondary text-default-50 py-2 px-4 rounded-lg">
                     Read More
                   </button>
                 </Link>

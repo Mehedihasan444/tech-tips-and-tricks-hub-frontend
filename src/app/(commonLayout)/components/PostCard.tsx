@@ -76,7 +76,7 @@ const PostCard = ({ post }: { post: any }) => {
       }
     };
 
-    if (post._id) {
+    if (post._id ) {
       fetchComments(); // Call the API to fetch comments only once when the component mounts
     }
   }, [post, setNumberOfComments]); // Depend on postId so it only re-fetches if postId changes
@@ -135,7 +135,7 @@ const PostCard = ({ post }: { post: any }) => {
                 : ""
             }`}
           >
-            <div className="text-gray-600 mt-2">
+            <div className="text-default-600 mt-2">
               <span className="inline">
                 {isExpanded
                   ? parse(post.content)

@@ -39,11 +39,11 @@ const Followers = ({ user, posts }: { user: IUser; posts: TPost[] }) => {
         <p>{user?.following?.length || 0}</p>
         <h2 className="text-lg font-semibold ">Following</h2>
       </div>
-      <div className="ml-5">
+      <div className="sm:ml-5">
         {loggedInUser?.nickName != user?.nickName ? (
           <button
             onClick={handleFollowAndUnfollow}
-            className="bg-secondary text-white px-4 py-2 rounded-md"
+            className="bg-secondary text-default-50 px-4 py-2 rounded-md"
           >
             {isFollower() ? "Following" : "Follow"}
           </button>

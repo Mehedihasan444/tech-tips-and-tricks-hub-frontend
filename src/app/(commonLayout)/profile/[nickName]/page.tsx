@@ -34,9 +34,9 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
   return (
     <div className="max-w-5xl mx-auto p-4 ">
       {/* Header Section */}
-      <div className="flex items-center justify-between mb-6 bg-default-50 p-3 shadow-md rounded-lg">
+      <div className="sm:flex items-center justify-between mb-6 bg-default-50 p-3 shadow-md rounded-lg">
         <div className="flex items-center space-x-4">
-          <div className="relative">
+          <div className="relative ">
             {user?.isPremium ? (
               <Badge content="Verified" color="secondary" variant="solid">
                 <Image
@@ -58,11 +58,11 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
             )}
             {showEditOption && <UpdateProfilePhoto />}
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1 flex-1">
             <h1 className="text-2xl font-bold">{user?.name}</h1>
             {/* shortBio */}
             <ShortBio user={user} showEditOption={showEditOption} />
-            {/* <p className="text-gray-600">{user?.shortBio}</p> */}
+            {/* <p className="bg-default-600">{user?.shortBio}</p> */}
           </div>
         </div>
         <div className="flex justify-center items-center">
@@ -77,8 +77,8 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
         {/* Bio Section */}
         <Bio user={user} showEditOption={showEditOption} />
       </div>
-      <div className="flex justify-between gap-5 h-full">
-        <div className="flex-1 max-w-80 ">
+      <div className="sm:flex justify-between gap-5 h-full">
+        <div className="flex-1 sm:max-w-80 ">
           <div className="sticky top-0">
             {/* Personal Information Section */}
             <PersonalInformation user={user} showEditOption={showEditOption} />
@@ -97,12 +97,17 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
               <h2 className="text-xl font-semibold mb-4">Create a New Post</h2>
               <Divider />
               <div className="flex justify-between gap-5 mt-2">
-                <h3 className=" text-teal-600 flex gap-2 border rounded-full  p-3 w-full shadow-inner ">
+                <label
+                  htmlFor="CreatePost"
+                  className="cursor-pointer text-teal-600 flex gap-2 border rounded-full  p-3 w-full shadow-inner "
+                >
                   <ClipboardPenLine />
                   What&lsquo;s on your mind?...
-                </h3>
-                {/* create post modal */}
-                <CreatePost />
+                  {/* create post modal */}
+                  <div className="hidden">
+                    <CreatePost />
+                  </div>
+                </label>
               </div>
             </div>
           )}

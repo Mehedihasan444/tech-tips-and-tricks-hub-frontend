@@ -48,13 +48,13 @@ const Bio = ({ user ,showEditOption }: { user: IUser ,showEditOption:boolean }) 
           <div className="flex justify-end mt-2">
             <button
               onClick={handleSaveBio}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md mr-2"
+              className="px-4 py-2 bg-blue-500 text-default-50 rounded-md mr-2"
             >
               Save
             </button>
             <button
               onClick={() => setBioEditMode(false)}
-              className="px-4 py-2 bg-gray-500 text-white rounded-md"
+              className="px-4 py-2 bg-gray-500 text-default-50 rounded-md"
             >
               Cancel
             </button>

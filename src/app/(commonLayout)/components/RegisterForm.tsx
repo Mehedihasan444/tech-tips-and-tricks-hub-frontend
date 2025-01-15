@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import GoogleLoginBtn from "./shared/GoogleLoginBtn";
 import FormDivider from "./shared/FormDivider";
 import SubmitBtn from "./SubmitBtn";
-import { Input } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { EyeIcon, EyeOff } from "lucide-react";
 import { useUserRegistration } from "@/hooks/auth.hook";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -58,12 +58,17 @@ const RegisterForm = () => {
       setErrors("Passwords do not match.");
       return;
     }
-    const nickName = await generateNickname(name)
-    handleUserRegistration({ name, email, password, profilePhoto, nickName });
+    const nickName = generateNickname(name)
+ handleUserRegistration({ name, email, password, profilePhoto, nickName });
+
   };
 
   return (
-    <>
+    <div className="space-y-4">
+    <div className="flex gap-4">
+      <Button variant="faded" onClick={() => { setEmail("admin@gmail.com"); setPassword("admin@gmail.com"); setConfirmPassword("admin@gmail.com"); setName("Admin") }}>Admin Credentials</Button>
+      <Button variant="faded" onClick={() => { setEmail("user@gmail.com"); setPassword("user@gmail.com"); setConfirmPassword("user@gmail.com"); setName("User") }}>User Credentials</Button>
+    </div>
       <form
         onSubmit={handleSubmit}
         className="w-full space-y-3 max-w-md border p-4 rounded-md border-primary"
@@ -166,7 +171,7 @@ const RegisterForm = () => {
           </p>
         </div>
       </form>
-    </>
+    </div>
   );
 };
 

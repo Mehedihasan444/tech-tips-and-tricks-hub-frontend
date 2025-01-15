@@ -81,12 +81,6 @@ export const deleteComment = async (
   }
 };
 
-// export const getAllCommentsOfASinglePost = async (postId: string) => {
-//   const { data } = await axiosInstance.get(`/comments?postId=${postId}`);
-// console.log(data.data)
-//   return data.data;
-// };
-
 export const getAllCommentsOfASinglePost = async (postId: string) => {
   const fetchOption = {
     next: {

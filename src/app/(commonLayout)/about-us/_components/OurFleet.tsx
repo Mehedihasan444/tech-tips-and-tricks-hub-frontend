@@ -36,13 +36,13 @@ const OurFleet = () => {
         </div>
         <div className="flex flex-wrap gap-5 items-center justify-center">
           {data.map((item) => (
-            <div key={item.id} className="bg-gray-200 p-10 rounded-md shadow-lg">
+            <div key={item.id} className="bg-default-50 p-10 rounded-md shadow-lg">
               <div className="text-center space-y-5">
                 <div>
                   <CountUpComponent value={item.number} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-600">{item.title}</h2>
+                  <h2 className="text-xl font-semibold text-default-600">{item.title}</h2>
                 </div>
               </div>
             </div>

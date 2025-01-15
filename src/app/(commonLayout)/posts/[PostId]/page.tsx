@@ -78,10 +78,10 @@ const PostDetailPage = async ({ params: { PostId } }: IProps) => {
       <section className="flex justify-between items-center">
         <div className="">
           <div className="post-category">
-            <strong className="text-gray-500">Category:</strong> {post.category}
+            <strong className="bg-default-500">Category:</strong> {post.category}
           </div>{" "}
           <div className="post-updated">
-            <strong className="text-gray-500">Last updated on:</strong>{" "}
+            <strong className="bg-default-500">Last updated on:</strong>{" "}
             {new Date(post.updatedAt).toLocaleDateString()}
           </div>
         </div>
@@ -104,7 +104,7 @@ const PostDetailPage = async ({ params: { PostId } }: IProps) => {
       <section className="flex justify-between  items-center gap-5">
         <div className="flex items-center gap-5">
           <div className="">
-            <h2 className="font-semibold text-gray-500">Share this post : </h2>
+            <h2 className="font-semibold bg-default-500">Share this post : </h2>
           </div>
           <div className="flex gap-5 items-center">
             <Tooltip content="Share on Facebook">

@@ -7,10 +7,17 @@ export const useUserRegistration = () => {
   return useMutation<any, Error, any>({
     mutationKey: ["USER_REGISTRATION"],
     mutationFn: async (userData) => await registerUser(userData),
-    onSuccess: () => {
-      toast.success("User registration successful.");
+    onSuccess: (data) => {
+      if (data.success) {
+
+        toast.success("User registration successful.");
+      } else if (!data.success) {
+
+        toast.error(data.message);
+      }
     },
     onError: (error) => {
+      console.log(error, "error");
       toast.error(error.message);
     },
   });
@@ -20,10 +27,16 @@ export const useUserLogin = () => {
   return useMutation<any, Error, any>({
     mutationKey: ["USER_LOGIN"],
     mutationFn: async (userData) => await loginUser(userData),
-    onSuccess: () => {
-      toast.success("User login successful.");
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success("User login successfull.");
+      } else if (!data.success) {
+
+        toast.error(data.message);
+      }
     },
     onError: (error) => {
+      console.log(error, 'error')
       toast.error(error.message);
     },
   });
@@ -47,7 +60,7 @@ export const useResetPassword = () => {
     mutationFn: async (userData) => await resetPassword(userData),
     onSuccess: () => {
       logout()
-      
+
       toast.success("Your password has been reset.");
     },
     onError: (error) => {

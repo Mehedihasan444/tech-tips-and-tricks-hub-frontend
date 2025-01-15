@@ -8,6 +8,7 @@ import axiosInstance from "@/config/axios.config";
 import { revalidateTag } from "next/cache";
 import { getUser } from "../UserService";
 
+
 export const registerUser = async (userData: Record<string, unknown>) => {
   try {
     const { data } = await axiosInstance.post("/auth/register", userData);
@@ -15,11 +16,18 @@ export const registerUser = async (userData: Record<string, unknown>) => {
     if (data.success) {
       cookies().set("accessToken", data?.data?.accessToken);
       cookies().set("refreshToken", data?.data?.refreshToken);
+      revalidateTag("users");
     }
-    revalidateTag("users");
+
     return data;
   } catch (error: any) {
-    throw new Error(error);
+    if (error?.response?.data?.success === false) {
+
+      return (error?.response?.data);
+    } else {
+
+      throw new Error(error);
+    }
   }
 };
 
@@ -34,7 +42,13 @@ export const loginUser = async (userData: Record<string, unknown>) => {
 
     return data;
   } catch (error: any) {
-    throw new Error(error);
+    if (error?.response?.data?.success === false) {
+
+      return (error?.response?.data);
+    } else {
+
+      throw new Error(error);
+    }
   }
 };
 
@@ -55,7 +69,7 @@ export const resetPassword = async (userData: Record<string, unknown>) => {
   try {
     const { token, ...newData } = userData;
     if (typeof token === 'string') {
-      await cookies().set("accessToken", token);
+      cookies().set("accessToken", token);
     }
 
     const { data } = await axiosInstance.post("/auth/reset-password", newData);

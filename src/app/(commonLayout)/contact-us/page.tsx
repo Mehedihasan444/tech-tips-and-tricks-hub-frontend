@@ -17,10 +17,10 @@ const MapSection = dynamic(() => import("./_components/MapSection"), {
 });
 const ContactUs = () => {
   return (
-    <div className="min-h-screen bg-gray-100 py-12">
+    <div className="min-h-screen bg-default-50 py-12">
       {/* Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">
+        <h2 className="text-4xl font-bold text-center  mb-8">
           Contact Us
         </h2>
 
@@ -31,22 +31,22 @@ const ContactUs = () => {
           {/* Right Side: Company Information */}
           <div className="space-y-6">
             {/* Company Info */}
-            <Card className="bg-white p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">
+            <Card className="bg-default-50 p-6 rounded-lg shadow-lg">
+              <h3 className="text-2xl font-semibold  mb-4">
                 Contact Information
               </h3>
               <div className="space-y-4">
                 <div className="flex items-center">
                   <Phone className="text-teal-600 text-2xl mr-3" />
-                  <p className="text-gray-700">+1 123 456 7890</p>
+                  <p className="">+1 123 456 7890</p>
                 </div>
                 <div className="flex items-center">
                   <Mail className="text-teal-600 text-2xl mr-3" />
-                  <p className="text-gray-700">info@techtips.com</p>
+                  <p className="">info@techtips.com</p>
                 </div>
                 <div className="flex items-center">
                   <MapPin className="text-teal-600 text-2xl mr-3" />
-                  <p className="text-gray-700">
+                  <p className="">
                     123 Tech Street, San Francisco, CA
                   </p>
                 </div>
@@ -54,8 +54,8 @@ const ContactUs = () => {
             </Card>
 
             {/* Social Media Links */}
-            <Card className="bg-white p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">
+            <Card className="bg-default-50 p-6 rounded-lg shadow-lg">
+              <h3 className="text-2xl font-semibold  mb-4">
                 Follow Us
               </h3>
               <div className="flex space-x-6 text-2xl">

@@ -17,7 +17,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
 const MapSection = () => {
     return (
         <div className="mt-10">
-        <h3 className="text-2xl font-semibold text-center text-gray-800 mb-4">
+        <h3 className="text-2xl font-semibold text-center  mb-4">
           Our Location
         </h3>
         <MapContainer
