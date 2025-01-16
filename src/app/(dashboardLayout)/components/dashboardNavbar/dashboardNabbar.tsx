@@ -8,26 +8,26 @@ const NavbarWrapper = ({ children }: { children: ReactNode }) => {
 
   return (
     <div className="w-full ">
-      <div className="p-5 flex justify-between items-center bg-teal-100">
+      <div className="p-5 flex justify-between items-center shadow">
         <div className="flex-1">
-          {/*  */}
-          <ThemeSwitcher/>
+
+          <ThemeSwitcher />
 
         </div>
         <div className="flex-1 flex gap-8 items-center justify-end">
-            <Badge content="99+" shape="circle" color="danger">
-              <Button
-                radius="full"
-                isIconOnly
-                aria-label="more than 99 notifications"
-                variant="light"
-              >
-          <Tooltip content={"Notification"} color="primary">
-                <Bell size={24} className="text-secondary" />
-          </Tooltip>
-              </Button>
-            </Badge>
-          {/*  */}
+          <Badge content="99+" shape="circle" color="danger">
+            <Button
+              radius="full"
+              isIconOnly
+              aria-label="more than 99 notifications"
+              variant="light"
+            >
+              <Tooltip content={"Notification"} color="primary">
+                <Bell size={24} className="" />
+              </Tooltip>
+            </Button>
+          </Badge>
+
           <Tooltip content={"Profile"} color="primary">
             <div className="max-w-fit">
               <ProfileDropdown />

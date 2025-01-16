@@ -12,7 +12,9 @@ import {
   Star,
   Settings,
   Menu,
-  X
+  X,
+  NotebookTabs,
+  Store
 } from 'lucide-react';
 
 const menuItems = [
@@ -21,7 +23,9 @@ const menuItems = [
   { icon: Newspaper, label: 'Latest News', href: '/news' },
   { icon: BookOpen, label: 'Tutorials', href: '/tutorials' },
   { icon: Users, label: 'Community', href: '/community' },
-  { icon: Star, label: 'Premium', href: '/premium' },
+  { icon: Star, label: 'Premium', href: '/subscription' },
+  { icon: Store, label: 'About Us', href: '/about-us' },
+  { icon: NotebookTabs, label: 'Contact Us', href: '/contact-us' },
 ];
 
 export default function Sidebar() {
@@ -35,7 +39,9 @@ export default function Sidebar() {
     >
       <div className="flex items-center justify-between p-4 border-b">
         {!collapsed && (
+          <Link href={"/"}>
           <h1 className="text-xl font-bold">TechNest</h1>
+          </Link>
         )}
         <Button
           isIconOnly

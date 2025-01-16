@@ -2,10 +2,9 @@
 "use client";
 import useDebounce from "@/hooks/debounce.hook";
 import { useSearchPosts } from "@/hooks/search.hook";
-// import { ISearchResult } from "@/types/ISearchResult";
 import { TPost } from "@/types/TPost";
-import { Button, Input } from "@nextui-org/react";
-import { SearchIcon} from "lucide-react";
+import { Button } from "@nextui-org/react";
+import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -33,49 +32,26 @@ const Searchbar = () => {
 
   useEffect(() => {
     if (isSuccess && data && searchTerm) {
-      setSearchResults(data?.data|| []);
+      setSearchResults(data?.data || []);
     }
   }, [isSuccess, data, searchTerm]);
   return (
-    <div className="relative">
-      <Input
-      aria-label="Search"
-        onChange={(e) => setSearch(e.target.value)}
-        // isClearable
-        radius="full"
-        classNames={{
-          label: "text-black/50 dark:text-white/90 ",
-          input: [
-            "bg-transparent",
-            "text-black/90 dark:text-white/90",
-            "placeholder:text-default-700/50 dark:placeholder:text-white/60",
-          ],
-          innerWrapper: "bg-transparent",
-          inputWrapper: [
-            "shadow-md",
-            "text-default-200/50",
-            "dark:bg-default/60",
-            "backdrop-blur-xl",
-            "backdrop-saturate-200",
-            "hover:text-default-200/70",
-            "dark:hover:bg-default/70",
-            "group-data-[focus=true]:text-default-200/50",
-            "dark:group-data-[focus=true]:bg-default/60",
-            "!cursor-text",
-            "w-[500px] py-7",
-          ],
-        }}
-        placeholder="Type to search..."
-        startContent={
-          <SearchIcon className="text-black/50 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
-        }
-        
-     
-      />
+    <div className="relative w-full">
+      <div className="flex-1 max-w-2xl">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={20} />
+          <input
+            type="search"
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search tech tips..."
+            className="w-full pl-10 pr-4 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+      </div>
       {searchResults.length > 0 && (
         <div className="absolute top-14  mt-2 rounded-xl bg-default-100 p-3">
           <div className="space-y-3 overflow-y-auto h-[60vh] ">
-            {searchResults?.map((post:TPost) => (
+            {searchResults?.map((post: TPost) => (
               <Link
                 key={post._id} // Using post.id instead of index for better key usage
                 className="text-default-900 block rounded-md border shadow-sm from-default-200 p-2 transition-all hover:bg-gradient-to-l"
@@ -92,14 +68,14 @@ const Searchbar = () => {
                   <div>
                     <p className="text-sm font-semibold">{post.title}</p>
                     <p className="mt-1 w-full text-sm">
-              Category:
+                      Category:
                       {
                         post.category
                       }
                     </p>
                     <div className="flex gap-1 flex-wrap">
                       {
-                        post?.tags?.map(tag=><span className="text-blue-600 text-sm" key={tag}>#{tag}</span>)
+                        post?.tags?.map(tag => <span className="text-blue-600 text-sm" key={tag}>#{tag}</span>)
                       }
                     </div>
                   </div>
@@ -109,11 +85,11 @@ const Searchbar = () => {
           </div>
           <div className="mt-3 flex justify-center border-t-1 border-default-50 pt-3">
             <Button
-            variant="flat"
+              variant="flat"
               className="flex items-center justify-center gap-1 w-full"
               onClick={() => handleSeeAll(searchTerm)}
             >
-          See All
+              See All
             </Button>
           </div>
         </div>
