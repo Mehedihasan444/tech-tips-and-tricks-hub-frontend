@@ -9,6 +9,7 @@ import PostCard from "./components/PostCard";
 import Sidebar from "./components/Sidebar";
 import NavigationBar from "./components/shared/NavigationBar";
 import { StoriesSection } from "./components/stories/stories-section";
+
 const suggestedFriends = [
   {
     name: 'Sarah Chen',
@@ -75,21 +76,18 @@ const NewsFeed = () => {
   return (
     <div className="flex gap-4">
       <div className="">
-
+        {/* sidebar */}
         <Sidebar />
       </div>
       <div className="">
-
+        {/* navbar */}
         <NavigationBar></NavigationBar>
         <div className="flex gap-4">
-
           <div className="max-w-4xl  mx-auto">
             {/* stories */}
             <div className="">
               <StoriesSection />
             </div>
-
-
             {/* filter with create button */}
             <section className="flex my-4 justify-between gap-4 items-center">
               <div className="sm:flex-1">

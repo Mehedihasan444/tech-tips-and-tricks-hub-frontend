@@ -5,23 +5,23 @@ import Link from 'next/link';
 import { Button } from '@nextui-org/react';
 import {
   Home,
-  Laptop,
-  Newspaper,
-  BookOpen,
+  // BookOpen,
   Users,
   Star,
   Settings,
   Menu,
   X,
   NotebookTabs,
-  Store
+  Store,
+  Handshake,
+  Bookmark
 } from 'lucide-react';
 
 const menuItems = [
   { icon: Home, label: 'Home', href: '/' },
-  { icon: Laptop, label: 'Tech Reviews', href: '/reviews' },
-  { icon: Newspaper, label: 'Latest News', href: '/news' },
-  { icon: BookOpen, label: 'Tutorials', href: '/tutorials' },
+  { icon: Handshake, label: 'Friends', href: '/my-friends' },
+  { icon: Bookmark, label: 'Saved Posts', href: '/saved-posts' },
+  // { icon: BookOpen, label: 'Tutorials', href: '/tutorials' },
   { icon: Users, label: 'Community', href: '/community' },
   { icon: Star, label: 'Premium', href: '/subscription' },
   { icon: Store, label: 'About Us', href: '/about-us' },

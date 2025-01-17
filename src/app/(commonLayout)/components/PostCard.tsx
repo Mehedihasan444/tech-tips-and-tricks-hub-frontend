@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Button, Divider, Link, User } from "@nextui-org/react";
-import { ThumbsDown, ThumbsUp, Share2, MessageCircle } from "lucide-react";
+import { ThumbsDown, ThumbsUp, Share2, MessageCircle, Bookmark } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import MediaGallery from "./MediaGallery";
 import parse from "html-react-parser";
@@ -26,7 +26,7 @@ const PostCard = ({ post }: { post: any }) => {
   const user = post?.author;
   const router = useRouter();
 
-  
+
   // Function to handle sharing via Web Share API
   const handleShare = () => {
     if (navigator.share) {
@@ -76,10 +76,16 @@ const PostCard = ({ post }: { post: any }) => {
       }
     };
 
-    if (post._id ) {
+    if (post._id) {
       fetchComments(); // Call the API to fetch comments only once when the component mounts
     }
   }, [post, setNumberOfComments]); // Depend on postId so it only re-fetches if postId changes
+
+
+// handle bookmark
+const handleBookmark=(id:string)=>{
+  console.log(id);
+}
 
   return (
     <div className="">
@@ -127,13 +133,12 @@ const PostCard = ({ post }: { post: any }) => {
         </div>
         <div className="relative">
           <div
-            className={` ${
-              post?.isPremium &&
-              !loggedInUser?.isPremium &&
-              post?.author?.nickName != loggedInUser?.nickName
+            className={` ${post?.isPremium &&
+                !loggedInUser?.isPremium &&
+                post?.author?.nickName != loggedInUser?.nickName
                 ? "blur-sm"
                 : ""
-            }`}
+              }`}
           >
             <div className="text-default-600 mt-2">
               <span className="inline">
@@ -169,9 +174,8 @@ const PostCard = ({ post }: { post: any }) => {
             !loggedInUser?.isPremium &&
             post?.author?.nickName != loggedInUser?.nickName && (
               <div
-                className={`${
-                  post?.isPremium && loggedInUser?.isPremium ? "hidden" : ""
-                } absolute top-0 right-0 left-0 bottom-0 font-medium px-5 py-3 flex justify-center items-center h-full`}
+                className={`${post?.isPremium && loggedInUser?.isPremium ? "hidden" : ""
+                  } absolute top-0 right-0 left-0 bottom-0 font-medium px-5 py-3 flex justify-center items-center h-full`}
               >
                 {post?.isPremium &&
                   !loggedInUser?.isPremium &&
@@ -234,6 +238,11 @@ const PostCard = ({ post }: { post: any }) => {
               <MessageCircle className="w-5 h-5 text-teal-500 mr-1" />
             </button>
             <span className="text-sm text-teal-600">{numberOfComments}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button onClick={()=>handleBookmark(post._id)}>
+              <Bookmark className="w-5 h-5 text-teal-500 mr-1" />
+            </button>
           </div>
 
           {/* Upvote & Downvote Section */}
