@@ -44,9 +44,9 @@ const MyFriendsPage = () => {
     return (
         <div className="flex gap-4 ">
             <Sidebar />
-            <div className="">
+            <div className="flex-1">
                 <NavigationBar />
-                <div className="p-4 max-w-7xl mx-auto">
+                <div className="p-4 max-w-5xl mx-auto">
                     <div className="flex items-center gap-2 mb-8">
                         <Users className="text-3xl text-primary" />
                         <h1 className="text-3xl font-bold">My Friends</h1>
