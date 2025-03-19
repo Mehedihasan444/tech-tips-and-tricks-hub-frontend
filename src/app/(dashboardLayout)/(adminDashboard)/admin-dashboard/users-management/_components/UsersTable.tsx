@@ -47,9 +47,8 @@ interface SortedBy {
 
 const UsersTable = ({ users }: { users: IUser[] }) => {
   const [sortedBy, setSortedBy] = useState<SortedBy | null>(null);
-  const [page, setPage] = useState<number>(1);
-  const rowsPerPage = 8;
-
+  
+  
   // Sort the data based on the selected column
   const sortedUsers = useMemo(() => {
     if (!sortedBy) return users;
@@ -64,13 +63,6 @@ const UsersTable = ({ users }: { users: IUser[] }) => {
     });
   }, [users, sortedBy]);
 
-  const totalPages = Math.ceil(users?.length / rowsPerPage);
-
-  const paginatedUsers = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-    return sortedUsers.slice(start, end);
-  }, [page, sortedUsers]);
 
   type OmittedKeys = "socialMedia" | "education"; // Specify the keys you want to omit
   //"following" | "followers" |
@@ -158,20 +150,8 @@ const UsersTable = ({ users }: { users: IUser[] }) => {
 
   return (
     <Table
-      aria-label="User table with sorting and pagination"
-      bottomContent={
-        <div className="flex w-full justify-center">
-          <Pagination
-            isCompact
-            showControls
-            showShadow
-            color="secondary"
-            page={page}
-            total={totalPages}
-            onChange={(newPage) => setPage(newPage)}
-          />
-        </div>
-      }
+      aria-label="User table with sorting"
+      // Remove bottom pagination content
       style={{
         height: "auto",
         minWidth: "100%",
@@ -192,7 +172,8 @@ const UsersTable = ({ users }: { users: IUser[] }) => {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={paginatedUsers}>
+      <TableBody items={sortedUsers}>
+        {/* Change paginatedUsers to sortedUsers */}
         {(user) => (
           <TableRow key={user._id}>
             {(columnKey) => (

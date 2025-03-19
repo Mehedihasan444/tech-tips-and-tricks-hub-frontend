@@ -5,14 +5,18 @@ import envConfig from "@/config/envConfig";
 import { IUserData } from "@/types/IUser";
 import { revalidateTag } from "next/cache";
 
-export const getUsers = async () => {
-  let fetchOptions = {};
-
-  fetchOptions = {
-    cache: "force-cache" as RequestCache,
+export const getUsers = async (page:number=1,limit:number=8) => {
+  let fetchOptions = {
+    next:{
+      revalidate: 10,
+      cache: "force-cache" as RequestCache,
+      tags: ["users"],
+    }
   };
 
-  const res = await fetch(`${envConfig.baseApi}/users`, fetchOptions);
+
+
+  const res = await fetch(`${envConfig.baseApi}/users?page=${page}&limit=${limit}`, fetchOptions);
 
   if (!res.ok) {
     throw new Error("Failed to fetch data");
