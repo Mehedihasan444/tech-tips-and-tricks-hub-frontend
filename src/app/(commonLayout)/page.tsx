@@ -79,11 +79,11 @@ const NewsFeed = () => {
         {/* sidebar */}
         <Sidebar />
       </div>
-      <div className="">
+      <div className="w-full">
         {/* navbar */}
         <NavigationBar></NavigationBar>
         <div className="flex gap-4">
-          <div className="max-w-4xl  mx-auto">
+          <div className="max-w-4xl w-full  mx-auto">
             {/* stories */}
             <div className="">
               <StoriesSection />
