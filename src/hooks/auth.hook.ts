@@ -47,7 +47,7 @@ export const useForgetPassword = () => {
     mutationKey: ["FORGET_PASSWORD"],
     mutationFn: async (userData) => await forgetPassword(userData),
     onSuccess: () => {
-      toast.success("Check you email");
+      toast.success("Check your email");
     },
     onError: (error) => {
       toast.error(error.message);

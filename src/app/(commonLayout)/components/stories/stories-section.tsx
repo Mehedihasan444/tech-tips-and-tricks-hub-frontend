@@ -248,7 +248,7 @@ const [user, setUser] = useState<any>(null)
                       </button>
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Story Actions">
-                      <DropdownItem key="edit">Edit</DropdownItem>
+                      {/* <DropdownItem key="edit">Edit</DropdownItem> */}
                       <DropdownItem 
                         key="delete" 
                         className="text-danger" 

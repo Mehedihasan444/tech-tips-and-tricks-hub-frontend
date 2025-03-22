@@ -32,14 +32,14 @@ export default function ProfileDropdown() {
       showArrow
       radius="sm"
       classNames={{
-        base: "before:text-default-200", // change arrow background
+        base: "before:text-primary", // Changed to primary color for arrow
         content: "p-0 border-small border-divider bg-background",
       }}
     >
       <DropdownTrigger>
         <Avatar
           as="button"
-          color="secondary"
+          color="primary" // Changed to primary color for consistency
           size="md"
           src={user?.profilePhoto}
         />
@@ -54,11 +54,11 @@ export default function ProfileDropdown() {
             "text-default-500",
             "transition-opacity",
             "data-[hover=true]:text-foreground",
-            "data-[hover=true]:text-default-100",
-            "dark:data-[hover=true]:text-default-50",
-            "data-[selectable=true]:focus:text-default-50",
+            "data-[hover=true]:bg-primary/20", // Changed hover background to primary with opacity
+            "data-[hover=true]:text-primary", // Changed hover text to primary
+            "data-[selectable=true]:focus:text-primary", // Changed focus text to primary
             "data-[pressed=true]:opacity-70",
-            "data-[focus-visible=true]:ring-default-500",
+            "data-[focus-visible=true]:ring-primary", // Changed focus ring to primary
           ],
         }}
       >
@@ -83,7 +83,7 @@ export default function ProfileDropdown() {
           </DropdownItem>
           <DropdownItem
             key="my-profile"
-            endContent={<SquareUser className="text-large" />}
+            endContent={<SquareUser className="text-large text-primary" />} // Added text-primary
             onClick={() => handleNavigation(`/profile/${user?.nickName}`)}
           >
             My Profile
@@ -104,37 +104,33 @@ export default function ProfileDropdown() {
             key="dashboard"
             onClick={() =>
               handleNavigation(
-                `${user?.role == "USER" ? "/dashboard" : "/admin-dashboard"}`
+                user?.role === "USER" ? "/dashboard" : "/admin-dashboard"
               )
             }
           >
-            {/* <Link
-              href={`${
-                user?.role == "USER" ? "/dashboard" : "/admin-dashboard"
-              }`} aria-label={`${
-                user?.role == "USER" ? "/dashboard" : "/admin-dashboard"
-              }`}
-            > */}
             Dashboard
-            {/* </Link> */}
           </DropdownItem>
         </DropdownSection>
 
         <DropdownSection aria-label="Help & Feedback">
           <DropdownItem
             key="get_subscription"
-            endContent={<CrownIcon className="text-large text-orange-500" />}
+            endContent={<CrownIcon className="text-large text-secondary" />} // Changed to secondary color
             onClick={() => handleNavigation(`/subscription`)}
           >
             Get Subscription
           </DropdownItem>
           <DropdownItem
             key="help_and_feedback"
-            onClick={() => handleNavigation(`/`)}
+            onClick={() => handleNavigation(`/contact-us`)} // Changed to contact-us for proper routing
           >
             Help & Feedback
           </DropdownItem>
-          <DropdownItem key="logout" onClick={() => handleLogout()}>
+          <DropdownItem 
+            key="logout" 
+            className="text-danger" // Added danger color for logout
+            onClick={() => handleLogout()}
+          >
             Log Out
           </DropdownItem>
         </DropdownSection>
