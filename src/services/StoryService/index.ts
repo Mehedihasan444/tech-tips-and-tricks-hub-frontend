@@ -1,6 +1,5 @@
 "use server"
 import axiosInstance from "@/config/axios.config";
-import envConfig from "@/config/envConfig";
 import { revalidateTag } from "next/cache";
 
 export const createStory = async (formData: FormData): Promise<any> => {
@@ -42,5 +41,17 @@ export const refreshStories = async () => {
   } catch (error) {
     console.error('Error revalidating stories:', error);
     return { success: false };
+  }
+};
+
+
+export const deleteStory = async (storyId: string) => {
+  try {
+    const res = await axiosInstance.delete(`/stories/${storyId}`);
+    revalidateTag("stories");
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to delete story");
   }
 };
