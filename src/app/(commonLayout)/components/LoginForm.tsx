@@ -49,8 +49,7 @@ const LoginForm = () => {
       setErrors("Both email and password are required.");
       return;
     }
-    const res = handleUserLogin({ email, password });
-    console.log(res, 'res');
+    handleUserLogin({ email, password });
   };
 
   return (
@@ -67,26 +66,26 @@ const LoginForm = () => {
 
       {/* Demo Credentials - More subtle */}
       <div className="flex gap-2 justify-center">
-        <Button 
+        <Button
           size="sm"
-          variant="flat" 
+          variant="flat"
           color="default"
           className="text-xs"
-          onClick={() => { 
-            setEmail("admin@gmail.com"); 
-            setPassword("admin@gmail.com"); 
+          onClick={() => {
+            setEmail("admin@gmail.com");
+            setPassword("admin@gmail.com");
           }}
         >
           Try Admin
         </Button>
-        <Button 
+        <Button
           size="sm"
-          variant="flat" 
+          variant="flat"
           color="default"
           className="text-xs"
-          onClick={() => { 
-            setEmail("user@gmail.com"); 
-            setPassword("user@gmail.com"); 
+          onClick={() => {
+            setEmail("user@gmail.com");
+            setPassword("user@gmail.com");
           }}
         >
           Try User
@@ -175,8 +174,8 @@ const LoginForm = () => {
       <div className="text-center">
         <p className="text-sm text-default-600">
           Don&apos;t have an account?{" "}
-          <Link 
-            href="/register" 
+          <Link
+            href="/register"
             className="text-primary hover:text-primary-600 font-semibold transition-colors"
           >
             Create account
