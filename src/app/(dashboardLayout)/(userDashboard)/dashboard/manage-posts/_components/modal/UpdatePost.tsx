@@ -242,6 +242,7 @@ export default function UpdatePost({ post }: { post: any }) {
       post,
       pictures,
       handleUpdatePost,
+      existingImages
     ]
   );
 
