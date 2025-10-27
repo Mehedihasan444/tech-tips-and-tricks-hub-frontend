@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, EllipsisVertical, X, Clock } from "lucide-react";
-import { StoryCard } from "./stoey-card";
+import { StoryCard } from "./story-card";
 import { getStories } from "@/services/StoryService";
 import {
   Modal,
@@ -22,7 +22,8 @@ import {
 } from "@nextui-org/react";
 
 import { useDeleteStory } from "@/hooks/story.hook";
-import { getCurrentUser } from "@/services/AuthService";
+import Image from "next/image";
+import { useUser } from "@/context/user.provider";
 
 const SCROLL_AMOUNT = 300;
 
@@ -61,14 +62,13 @@ export function StoriesSection() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { mutate: handleDeleteStory, isPending: isStoryLoading } = useDeleteStory();
   const [storyToDelete, setStoryToDelete] = useState<string | null>(null);
-  const [user, setUser] = useState<any>(null);
   const [storyProgress, setStoryProgress] = useState(0);
+  const { user } = useUser()
 
   useEffect(() => {
     const fetchStories = async () => {
       try {
         setLoading(true);
-        const loggedInUser = await getCurrentUser();
         const response = await getStories();
 
         const fetchedStories = response.data.map((story: any) => ({
@@ -81,7 +81,6 @@ export function StoriesSection() {
         }));
 
         setStories([createStoryItem, ...fetchedStories]);
-        setUser(loggedInUser);
         setError(null);
       } catch (err) {
         console.error('Error fetching stories:', err);
@@ -142,7 +141,7 @@ export function StoriesSection() {
     if (storyToDelete) {
       handleDeleteStory({ storyId: storyToDelete }, {
         onSuccess: () => {
-          setStories(prevStories => 
+          setStories(prevStories =>
             prevStories.filter(story => story.id !== storyToDelete)
           );
           closeStoryView();
@@ -220,8 +219,8 @@ export function StoriesSection() {
         <div className="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200">
           {/* Progress Bar */}
           <div className="absolute top-4 left-0 right-0 px-16 z-10">
-            <Progress 
-              value={storyProgress} 
+            <Progress
+              value={storyProgress}
               color="primary"
               size="sm"
               className="max-w-2xl mx-auto"
@@ -241,20 +240,23 @@ export function StoriesSection() {
           {/* Story Content */}
           <div className="relative max-w-lg w-full h-[85vh] mx-4">
             <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl">
-              <img
+              <Image
                 src={selectedStory.imageUrl}
                 alt={`${selectedStory.username}'s story`}
                 className="w-full h-full object-cover"
+                fill
               />
 
               {/* Story Header */}
               <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/70 to-transparent p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <img
+                    <Image
                       src={selectedStory.userImage}
                       alt={selectedStory.username}
                       className="w-12 h-12 rounded-full border-2 border-white ring-2 ring-white/20"
+                      height={48}
+                      width={48}
                     />
                     <div className="text-white">
                       <div className="font-semibold text-base">{selectedStory.username}</div>
@@ -264,7 +266,7 @@ export function StoriesSection() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Actions Menu */}
                   {!selectedStory.isAddStory && selectedStory.userId === user?._id && (
                     <Dropdown placement="bottom-end">
@@ -278,9 +280,9 @@ export function StoriesSection() {
                         </Button>
                       </DropdownTrigger>
                       <DropdownMenu aria-label="Story Actions">
-                        <DropdownItem 
-                          key="delete" 
-                          className="text-danger" 
+                        <DropdownItem
+                          key="delete"
+                          className="text-danger"
                           color="danger"
                           onClick={() => confirmDeleteStory(selectedStory.id)}
                         >
@@ -297,9 +299,9 @@ export function StoriesSection() {
       )}
 
       {/* Delete Confirmation Modal */}
-      <Modal 
-        isOpen={isOpen} 
-        onOpenChange={onOpenChange} 
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
         placement="center"
         backdrop="blur"
       >
