@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -20,7 +21,7 @@ export default function ManageUsersTable() {
         setLoading(true);
         const response = await getUsers(page, limit);
         setUsers(response.data.data);
-        
+
         // Calculate total pages based on total count from API
         if (response.data && response.data.pageCount) {
           setTotalPages(response.data.pageCount);
@@ -37,14 +38,14 @@ export default function ManageUsersTable() {
     fetchUsers();
   }, [page, limit]);
 
-  const handlePageChange = (newPage:number) => {
+  const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
 
   return (
-    <div className="container mx-auto p-6 bg-default-50 rounded-lg">
+    <div className="container mx-auto p-6 bg-default-50 rounded-lg mt-8">
       <PageTitle title="Manage Users" />
-      
+
       {loading ? (
         <div className="flex justify-center items-center py-20">
           <Spinner size="lg" color="primary" />
@@ -56,7 +57,7 @@ export default function ManageUsersTable() {
           <div className="mb-4">
             <UsersTable users={users} />
           </div>
-          
+
           <div className="flex justify-center mt-4">
             <Pagination
               isCompact

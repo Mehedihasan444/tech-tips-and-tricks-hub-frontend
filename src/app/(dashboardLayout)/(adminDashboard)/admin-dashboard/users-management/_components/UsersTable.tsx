@@ -10,9 +10,8 @@ import {
   User,
   Chip,
   Tooltip,
-  Pagination,
 } from "@nextui-org/react";
-import {  Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 import { IUser } from "@/types/IUser";
 import Link from "next/link";
 
@@ -26,7 +25,6 @@ const statusColorMap: Record<
 > = {
   ACTIVE: "success",
   BLOCKED: "danger",
-  // vacation: "warning",
 };
 
 const columns = [
@@ -38,6 +36,7 @@ const columns = [
   { name: "STATUS", uid: "status" },
   { name: "ACTIONS", uid: "actions" },
 ];
+
 type SortOrder = "asc" | "desc";
 
 interface SortedBy {
@@ -45,28 +44,49 @@ interface SortedBy {
   order: SortOrder;
 }
 
-const UsersTable = ({ users }: { users: IUser[] }) => {
+type OmittedKeys = "socialMedia" | "education";
+type TUserWithoutObjects = Omit<IUser, OmittedKeys>;
+
+const UsersTable = ({ users = [] }: { users?: IUser[] }) => {
   const [sortedBy, setSortedBy] = useState<SortedBy | null>(null);
-  
-  
+
+
   // Sort the data based on the selected column
   const sortedUsers = useMemo(() => {
-    if (!sortedBy) return users;
+    // CRITICAL: Always ensure we return an array, never undefined
+    if (!Array.isArray(users) || users.length === 0) {
+      return [];
+    }
+    
+    if (!sortedBy) {
+      return users;
+    }
+
     const { column, order } = sortedBy;
     const sortOrder = order === "asc" ? 1 : -1;
+
     return [...users].sort((a, b) => {
-      if (a[column] && b[column]) {
-        if (a[column] > b[column]) return sortOrder;
-        if (a[column] < b[column]) return -sortOrder;
+      const aValue = a[column];
+      const bValue = b[column];
+
+      // Handle array values (like followers/following)
+      if (Array.isArray(aValue) && Array.isArray(bValue)) {
+        return (aValue.length - bValue.length) * sortOrder;
       }
+
+      // Handle string/number values
+      if (aValue && bValue) {
+        if (aValue > bValue) return sortOrder;
+        if (aValue < bValue) return -sortOrder;
+      }
+
+      // Handle null/undefined values
+      if (!aValue && bValue) return sortOrder;
+      if (aValue && !bValue) return -sortOrder;
+
       return 0;
     });
   }, [users, sortedBy]);
-
-
-  type OmittedKeys = "socialMedia" | "education"; // Specify the keys you want to omit
-  //"following" | "followers" |
-  type TUserWithoutObjects = Omit<IUser, OmittedKeys>; // Create the new type
 
   const renderCell = useCallback(
     (
@@ -85,23 +105,23 @@ const UsersTable = ({ users }: { users: IUser[] }) => {
             />
           );
         case "followers":
-          // Make sure you're rendering valid data
           return (
-            <span>
-              {Array.isArray(user.followers) ? user.followers.length : "N/A"}
+            <span className="text-default-600">
+              {Array.isArray(user.followers) ? user.followers.length : 0}
             </span>
           );
         case "following":
-          // Similarly, ensure valid rendering for `following`
           return (
-            <span>
-              {Array.isArray(user.following) ? user.following.length : "N/A"}
+            <span className="text-default-600">
+              {Array.isArray(user.following) ? user.following.length : 0}
             </span>
           );
         case "role":
           return (
             <div className="flex flex-col">
-              <p className="text-bold text-sm capitalize">{user.role}</p>
+              <p className="text-bold text-sm capitalize text-default-700">
+                {user.role}
+              </p>
             </div>
           );
         case "status":
@@ -109,7 +129,8 @@ const UsersTable = ({ users }: { users: IUser[] }) => {
             <Chip
               className="capitalize"
               color={
-                statusColorMap[user?.status as keyof typeof statusColorMap]
+                statusColorMap[user?.status as keyof typeof statusColorMap] ||
+                "default"
               }
               size="sm"
               variant="flat"
@@ -122,7 +143,7 @@ const UsersTable = ({ users }: { users: IUser[] }) => {
             <div className="relative flex items-center gap-2">
               <Tooltip content="Details">
                 <Link href={`/profile/${user?.nickName}`}>
-                  <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                  <span className="text-lg text-default-400 cursor-pointer active:opacity-50 hover:text-primary transition-colors">
                     <Eye />
                   </span>
                 </Link>
@@ -134,24 +155,32 @@ const UsersTable = ({ users }: { users: IUser[] }) => {
             </div>
           );
         default:
-          return <span>{cellValue as keyof TUserWithoutObjects}</span>;
+          return (
+            <span className="text-default-600">
+              {String(cellValue || "")}
+            </span>
+          );
       }
     },
     []
   );
 
-  const handleSort = (column: keyof IUser) => {
-    let order: SortOrder = "asc";
-    if (sortedBy && sortedBy.column === column && sortedBy.order === "asc") {
-      order = "desc";
-    }
-    setSortedBy({ column, order });
-  };
+  const handleSort = useCallback((column: keyof IUser) => {
+    setSortedBy((prev) => {
+      let order: SortOrder = "asc";
+      if (prev && prev.column === column && prev.order === "asc") {
+        order = "desc";
+      }
+      return { column, order };
+    });
+  }, []);
 
   return (
     <Table
       aria-label="User table with sorting"
-      // Remove bottom pagination content
+      classNames={{
+        wrapper: "min-h-[400px]",
+      }}
       style={{
         height: "auto",
         minWidth: "100%",
@@ -162,20 +191,38 @@ const UsersTable = ({ users }: { users: IUser[] }) => {
           <TableColumn
             key={column.uid}
             align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting
-            onClick={() => handleSort(column.uid as keyof IUser)}
+            allowsSorting={column.uid !== "actions"}
+            onClick={() => {
+              if (column.uid !== "actions") {
+                handleSort(column.uid as keyof IUser);
+              }
+            }}
+            className="cursor-pointer hover:bg-default-100 transition-colors"
           >
-            {column.name}
-            {sortedBy && sortedBy.column === column.uid && (
-              <span>{sortedBy.order === "asc" ? "↑" : "↓"}</span>
-            )}
+            <div className="flex items-center gap-1">
+              {column.name}
+              {sortedBy && sortedBy.column === column.uid && (
+                <span className="text-primary font-bold">
+                  {sortedBy.order === "asc" ? " ↑" : " ↓"}
+                </span>
+              )}
+            </div>
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={sortedUsers}>
-        {/* Change paginatedUsers to sortedUsers */}
+      <TableBody 
+        items={sortedUsers} 
+        emptyContent={
+          <div className="text-center py-10">
+            <p className="text-default-500 text-lg">No users found</p>
+            <p className="text-default-400 text-sm mt-2">
+              There are no users to display at the moment.
+            </p>
+          </div>
+        }
+      >
         {(user) => (
-          <TableRow key={user._id}>
+          <TableRow key={user._id} className="hover:bg-default-50 transition-colors">
             {(columnKey) => (
               <TableCell>
                 {renderCell(
