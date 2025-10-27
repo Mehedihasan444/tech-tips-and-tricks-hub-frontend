@@ -11,13 +11,15 @@ type TPayment = {
 const page = async () => {
   const { data: payments } = await getPayments("");
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="w-full h-full max-w-4xl bg-default-50 shadow-md rounded-lg p-8">
+    <div className="min-h-screen p-8">
+      <div className="bg-gray-50 p-8">
+
         {/* Page Title */}
         <PageTitle title="Payment Information"></PageTitle>
 
         {/* Table Section */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto shadow-md rounded-lg p-8">
+
           <table className="min-w-full bg-default-50 border">
             <thead>
               <tr>
@@ -73,6 +75,7 @@ const page = async () => {
           .
         </div>
       </div>
+
     </div>
   );
 };
