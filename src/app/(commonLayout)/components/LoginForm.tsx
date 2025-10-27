@@ -50,39 +50,76 @@ const LoginForm = () => {
       return;
     }
     const res = handleUserLogin({ email, password });
-    console.log(res,
-      'res'
-    );
+    console.log(res, 'res');
   };
 
   return (
-
-    <div className="space-y-4">
-      <div className="flex gap-4">
-        <Button variant="faded" onClick={() => { setEmail("admin@gmail.com"); setPassword("admin@gmail.com"); }}>Admin Credentials</Button>
-        <Button variant="faded" onClick={() => { setEmail("user@gmail.com"); setPassword("user@gmail.com"); }}>User Credentials</Button>
+    <div className="w-full max-w-md space-y-6">
+      {/* Header Section */}
+      <div className="text-center space-y-2">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">
+          Welcome Back
+        </h1>
+        <p className="text-default-500 text-sm">
+          Sign in to your account to continue
+        </p>
       </div>
+
+      {/* Demo Credentials - More subtle */}
+      <div className="flex gap-2 justify-center">
+        <Button 
+          size="sm"
+          variant="flat" 
+          color="default"
+          className="text-xs"
+          onClick={() => { 
+            setEmail("admin@gmail.com"); 
+            setPassword("admin@gmail.com"); 
+          }}
+        >
+          Try Admin
+        </Button>
+        <Button 
+          size="sm"
+          variant="flat" 
+          color="default"
+          className="text-xs"
+          onClick={() => { 
+            setEmail("user@gmail.com"); 
+            setPassword("user@gmail.com"); 
+          }}
+        >
+          Try User
+        </Button>
+      </div>
+
+      {/* Main Form Card */}
       <form
-        className="w-full space-y-3 max-w-md border p-4 rounded-md border-primary"
+        className="w-full space-y-5 bg-content1 p-8 rounded-2xl shadow-lg border border-divider"
         onSubmit={handleSubmit}
       >
-        <h1 className="text-3xl font-semibold text-center">Login</h1>
-
-        {/* Email input */}
+        {/* Email Input */}
         <Input
-          label="Email"
+          label="Email Address"
           variant="bordered"
           isRequired
-          className="max-w-lg "
-          placeholder="Enter your email"
+          size="lg"
+          type="email"
+          placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          classNames={{
+            input: "text-base",
+            inputWrapper: "border-default-200 data-[hover=true]:border-default-400"
+          }}
         />
-        {/* Password input */}
+
+        {/* Password Input */}
         <Input
           label="Password"
           variant="bordered"
           isRequired
+          size="lg"
           placeholder="Enter your password"
           endContent={
             <button
@@ -92,52 +129,60 @@ const LoginForm = () => {
               aria-label="toggle password visibility"
             >
               {isVisible ? (
-                <EyeOff className="text-2xl text-default-400 pointer-events-none" />
+                <EyeOff className="w-5 h-5 text-default-400 pointer-events-none" />
               ) : (
-                <EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+                <EyeIcon className="w-5 h-5 text-default-400 pointer-events-none" />
               )}
             </button>
           }
           type={isVisible ? "text" : "password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="max-w-lg"
+          classNames={{
+            input: "text-base",
+            inputWrapper: "border-default-200 data-[hover=true]:border-default-400"
+          }}
         />
 
-        {/* Forgot password */}
-        <div className="text-right">
+        {/* Forgot Password Link */}
+        <div className="flex justify-end">
           <Link
             href="/forget-password"
-            className="text-sm text-primary hover:underline"
+            className="text-sm text-primary hover:text-primary-600 transition-colors font-medium"
           >
-            Forgot your password?
+            Forgot password?
           </Link>
         </div>
 
-        {/* Display errors */}
+        {/* Error Message */}
         {errors && (
-          <div className="text-red-500 text-sm text-center">{errors}</div>
+          <div className="bg-danger-50 border border-danger-200 text-danger-700 px-4 py-3 rounded-lg text-sm">
+            {errors}
+          </div>
         )}
 
-        {/* Submit button */}
-        <SubmitBtn text="Login" isLoading={isPending} />
+        {/* Submit Button */}
+        <SubmitBtn text="Sign In" isLoading={isPending} />
 
         {/* Divider */}
         <FormDivider />
 
-        {/* Google Login Button */}
+        {/* Google Login */}
         <GoogleLoginBtn />
-
-        {/* Already registered */}
-        <div className="text-center">
-          <p className="text-sm">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-primary hover:underline">
-              Register here
-            </Link>
-          </p>
-        </div>
       </form>
+
+      {/* Register Link */}
+      <div className="text-center">
+        <p className="text-sm text-default-600">
+          Don&apos;t have an account?{" "}
+          <Link 
+            href="/register" 
+            className="text-primary hover:text-primary-600 font-semibold transition-colors"
+          >
+            Create account
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };
