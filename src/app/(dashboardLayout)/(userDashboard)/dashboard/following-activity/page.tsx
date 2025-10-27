@@ -57,11 +57,11 @@ const ActivityPage = () => {
               <div>
                 <CardHeader className="flex justify-between">
                   <span className="font-semibold">{activity.action}</span>
-                  <span className="text-sm bg-default-500">
+                  <span className="text-sm text-default-500">
                     {new Date(activity.date).toLocaleDateString()}
                   </span>
                 </CardHeader>
-                <p className="bg-default-700">{activity.description}</p>
+                <p className="text-default-700">{activity.description}</p>
               </div>
             </CardBody>
           </Card>
