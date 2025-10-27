@@ -28,10 +28,13 @@ export const SidebarWrapper = () => {
         })}
       >
         <div className={Sidebar.Header()}>
-          <Link href="/" className="text-2xl font-semibold">
-            <span className="text-teal-600 transition duration-300">
-              TECHNEST
-            </span>
+         <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-lg">T</span>
+            </div>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              TechNest
+            </h1>
           </Link>
         </div>
 
