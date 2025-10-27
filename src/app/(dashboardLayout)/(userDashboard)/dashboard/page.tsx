@@ -1,7 +1,10 @@
+"use client"
 import React from "react";
 import { User, BarChart2, FileText, Activity, DollarSign, Users } from "lucide-react";
+import { useUser } from "@/context/user.provider";
 
 const DashboardPage = () => {
+  const { user } = useUser()
   return (
     // bg-gradient-to-r from-blue-100 to-teal-100
     <div className="min-h-screen  p-6">
@@ -24,13 +27,13 @@ const DashboardPage = () => {
             <h3 className="text-2xl font-semibold text-default-800">Profile Overview</h3>
           </div>
           <p className="text-default-600 mb-2">
-            <strong>Name:</strong> John Doe
+            <strong>Name:</strong> {user?.name}
           </p>
           <p className="text-default-600 mb-2">
-            <strong>Email:</strong> johndoe@example.com
+            <strong>Email:</strong> {user?.email}
           </p>
           <p className="text-default-600">
-            <strong>Member Since:</strong> January 2024
+            <strong>Member Since:</strong> {user?.createdAt?.split('T')[0]}
           </p>
         </div>
 
@@ -42,6 +45,7 @@ const DashboardPage = () => {
           </div>
           <p className="text-default-600 mb-2">
             <strong>Total Posts:</strong> 24
+
           </p>
           <p className="text-default-600 mb-2">
             <strong>Followers:</strong> 120
