@@ -134,6 +134,8 @@ export default function Sidebar() {
             </Button>
           </Tooltip>
         ) : (
+          <Link href={"/settings"}>
+
           <Button
             variant="flat"
             startContent={<Settings size={20} />}
@@ -141,6 +143,7 @@ export default function Sidebar() {
           >
             Settings
           </Button>
+          </Link>
         )}
       </div>
     </aside>
