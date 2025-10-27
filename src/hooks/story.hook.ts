@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createStory, deleteStory } from "@/services/StoryService";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";

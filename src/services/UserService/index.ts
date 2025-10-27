@@ -5,8 +5,10 @@ import envConfig from "@/config/envConfig";
 import { IUserData } from "@/types/IUser";
 import { revalidateTag } from "next/cache";
 
+
+
 export const getUsers = async (page:number=1,limit:number=8) => {
-  let fetchOptions = {
+  const fetchOptions = {
     next:{
       revalidate: 10,
       cache: "force-cache" as RequestCache,

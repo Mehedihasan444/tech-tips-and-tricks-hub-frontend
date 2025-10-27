@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server"
 import axiosInstance from "@/config/axios.config";
 import { revalidateTag } from "next/cache";
