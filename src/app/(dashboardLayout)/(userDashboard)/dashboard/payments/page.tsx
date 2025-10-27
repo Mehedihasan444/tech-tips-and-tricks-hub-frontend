@@ -14,8 +14,8 @@ const PaymentInfoPage = async () => {
   const userId=user?._id
   const { data: payments } = await getPayments(userId);
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="w-full h-full max-w-4xl bg-default-50 shadow-md rounded-lg p-8">
+    <div className="min-h-screen bg-gray-50 flex  justify-center p-8">
+      <div className="w-full h-full  bg-default-50 shadow-md rounded-lg p-4">
         {/* Page Title */}
         <PageTitle title="Payment Information"></PageTitle>
 
