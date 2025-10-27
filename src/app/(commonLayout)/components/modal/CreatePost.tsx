@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState, useCallback, useRef } from "react";
 import {
   Modal,
   ModalContent,
@@ -13,6 +13,7 @@ import {
   Select,
   SelectItem,
   Checkbox,
+  Chip,
 } from "@nextui-org/react";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
@@ -25,252 +26,438 @@ import { useCreatePost } from "@/hooks/post.hook";
 import { extractAndProcessImages } from "@/app/(dashboardLayout)/(userDashboard)/dashboard/create-post/_utils/extractAndProcessImages";
 import Image from "next/image";
 import { useUser } from "@/context/user.provider";
+import { PenSquare, X , Crown, Loader2 } from "lucide-react";
+
+// Separate component for the editor to ensure proper reinitialization
+function QuillEditor({
+  onImagesAdded,
+  isDisabled,
+  quillRef: externalQuillRef
+}: {
+  onImagesAdded: (files: File[]) => void;
+  isDisabled: boolean;
+  quillRef: React.MutableRefObject<any>;
+}) {
+  const { quill, quillRef } = useQuill();
+
+  useEffect(() => {
+    if (quill) {
+      // Store quill instance in parent ref
+      externalQuillRef.current = quill;
+
+      const selectLocalImage = () => {
+        const input = document.createElement("input");
+        input.setAttribute("type", "file");
+        input.setAttribute("accept", "image/*");
+        input.setAttribute("multiple", "multiple");
+        input.click();
+
+        input.onchange = () => {
+          const files = input.files;
+          if (files) {
+            onImagesAdded(Array.from(files));
+          }
+        };
+      };
+
+      const toolbar = quill.getModule("toolbar") as any;
+      if (toolbar) {
+        toolbar.addHandler("image", selectLocalImage);
+      }
+
+      // Enable/disable editor based on isDisabled prop
+      quill.enable(!isDisabled);
+    }
+  }, [quill, onImagesAdded, isDisabled, externalQuillRef]);
+
+  return (
+    <div
+      ref={quillRef}
+      className="flex-1 bg-white"
+      style={{
+        minHeight: "280px",
+        maxHeight: "280px",
+      }}
+    />
+  );
+}
 
 export default function CreatePost() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { quill, quillRef } = useQuill();
   const [title, setTitle] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedTags, setSelectedTags] = useState(new Set([]));
+  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set([]));
   const [isPremium, setIsPremium] = useState(false);
-  const [pictures, setPictures] = useState<File[] | []>([]);
+  const [pictures, setPictures] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editorKey, setEditorKey] = useState(0); // Key to force remount
+  const quillInstanceRef = useRef<any>(null);
   const { user } = useUser();
   const {
     mutate: handleCreatePost,
-    // isPending: createPostPending,
     isSuccess,
+    isPending,
   } = useCreatePost();
 
-  const handleSelectionChange = (e: any) => {
-    setSelectedTags(new Set(e.target.value.split(",")));
-  };
+  // Force remount editor when modal opens
   useEffect(() => {
-    const selectLocalImage = () => {
-      const input = document.createElement("input");
-      input.setAttribute("type", "file");
-      input.setAttribute("accept", "image/*");
-      input.setAttribute("multiple", "multiple"); // Allow multiple image selection
-      input.click();
-
-      input.onchange = () => {
-        const files = input.files;
-        // Check if files are present and append them
-        if (files) {
-          setPictures((prevPictures) => [
-            ...prevPictures,
-            ...Array.from(files),
-          ]);
-
-          // Array.from(files).forEach((file, index) => {
-          //   formData.append(`images[${index}]`, file);
-          // });
-        }
-      };
-    };
-
-    if (quill) {
-      const toolbar = quill.getModule("toolbar") as any; // Cast as 'any' if type is not available
-      toolbar.addHandler("image", selectLocalImage);
+    if (isOpen) {
+      setEditorKey(prev => prev + 1);
     }
+  }, [isOpen]);
 
-    if (isSuccess) {
-      setSelectedCategory(""); // Reset category
-      setSelectedTags(new Set([])); // Reset tags
-      if (quill) {
-        quill.setText(""); // Reset quill editor
+  // Memoized handler for adding images
+  const handleImagesAdded = useCallback((files: File[]) => {
+    setPictures((prevPictures) => [...prevPictures, ...files]);
+  }, []);
+
+  // Memoized handler for removing images
+  const removeImage = useCallback((index: number) => {
+    setPictures((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  // Memoized handler for category changes
+  const handleCategoryChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(e.target.value);
+  }, []);
+
+  // Reset form function
+  const resetForm = useCallback(() => {
+    setTitle("");
+    setSelectedCategory("");
+    setSelectedTags(new Set([]));
+    setPictures([]);
+    setIsPremium(false);
+    setIsSubmitting(false);
+
+    if (quillInstanceRef.current) {
+      try {
+        quillInstanceRef.current.setText("");
+      } catch (error) {
+        console.error("Error clearing editor:", error);
       }
     }
-  }, [quill, isSuccess, pictures]);
+  }, []);
 
-  // Handle category change
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(e.target.value);
-  };
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!isOpen && !isSubmitting && !isPending) {
+      const timer = setTimeout(() => {
+        resetForm();
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, isSubmitting, isPending, resetForm]);
 
-  const handleSubmit = async (e: FormEvent) => {
+  // Handle successful post creation
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Post created successfully!");
+      resetForm();
+      onOpenChange();
+    }
+  }, [isSuccess, resetForm, onOpenChange]);
+
+  // Validate form before submission
+  const validateForm = useCallback((): boolean => {
+    if (!title.trim()) {
+      toast.warning("Please enter a post title!");
+      return false;
+    }
+
+    if (!selectedCategory) {
+      toast.warning("Please select a category!");
+      return false;
+    }
+
+    if (selectedTags.size === 0) {
+      toast.warning("Please select at least one tag!");
+      return false;
+    }
+
+    if (!quillInstanceRef.current) {
+      toast.error("Editor is not ready. Please try again.");
+      return false;
+    }
+
+    const content = quillInstanceRef.current.getText().trim();
+    if (!content || content.length < 10) {
+      toast.warning("Please write some content for your post (at least 10 characters)!");
+      return false;
+    }
+
+    return true;
+  }, [title, selectedCategory, selectedTags]);
+
+  // Handle form submission
+  const handleSubmit = useCallback(async (e: FormEvent) => {
     e.preventDefault();
-    if (!selectedCategory || selectedTags.size === 0 || !title || !quill) {
-      toast.warning("Please fill up all input fields!");
+
+    // Prevent multiple simultaneous submissions
+    if (isSubmitting || isPending) {
+      toast.info("Please wait, your post is being created...");
       return;
     }
 
-    // Append the Quill editor content as HTML
-    const quillContent = quill.root.innerHTML;
-    const { cleanedContent } = extractAndProcessImages(quillContent);
-    const postData = {
-      content: cleanedContent,
-      title,
-      category: selectedCategory,
-      isPremium,
-      tags: Array.from(selectedTags),
-      author: user?._id,
-    };
-
-    const formData = new FormData();
-
-    formData.append("data", JSON.stringify(postData));
-    if (pictures) {
-      pictures.forEach((file) => {
-        formData.append("postImages", file);
-      });
+    // Validate form
+    if (!validateForm()) {
+      return;
     }
 
-    handleCreatePost(formData);
-  };
+    setIsSubmitting(true);
+
+    try {
+      const quillContent = quillInstanceRef.current.root.innerHTML;
+      const { cleanedContent } = extractAndProcessImages(quillContent);
+
+      const postData = {
+        content: cleanedContent,
+        title: title.trim(),
+        category: selectedCategory,
+        isPremium,
+        tags: Array.from(selectedTags),
+        author: user?._id,
+      };
+
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(postData));
+
+      if (pictures.length > 0) {
+        pictures.forEach((file) => {
+          formData.append("postImages", file);
+        });
+      }
+
+      handleCreatePost(formData);
+    } catch (error) {
+      console.error("Error creating post:", error);
+      toast.error("Failed to create post. Please try again.");
+      setIsSubmitting(false);
+    }
+  }, [
+    isSubmitting,
+    isPending,
+    validateForm,
+    title,
+    selectedCategory,
+    isPremium,
+    selectedTags,
+    user,
+    pictures,
+    handleCreatePost,
+  ]);
+
+  // Handle modal close
+  const handleModalClose = useCallback(() => {
+    if (isSubmitting || isPending) {
+      toast.info("Please wait until the post is created before closing.");
+      return;
+    }
+    onOpenChange();
+  }, [isSubmitting, isPending, onOpenChange]);
 
   return (
     <>
-      <Button onPress={onOpen} color="secondary" id="CreatePost">
+      <Button
+        onPress={onOpen}
+        color="primary"
+        size="lg"
+        startContent={<PenSquare size={20} />}
+        className="font-semibold shadow-lg shadow-primary/30"
+        isDisabled={isSubmitting || isPending}
+      >
         Create Post
       </Button>
       <Modal
-        backdrop="opaque"
+        backdrop="blur"
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        scrollBehavior={"inside"}
-        radius="lg"
-        size={"3xl"}
+        onOpenChange={handleModalClose}
+        scrollBehavior="inside"
+        size="3xl"
+        isDismissable={!isSubmitting && !isPending}
+        hideCloseButton={isSubmitting || isPending}
         classNames={{
-          body: "py-6 ",
-          backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
-          base: "border rounded-md  text-primary",
-          header: "border-b-[1px] ",
-          footer: "border-t-[1px] ",
-          closeButton: "hover:bg-default-50/5 active:bg-default-50/10",
+          body: "py-6",
+          backdrop: "bg-black/50 backdrop-blur-sm",
+          base: "border-2 border-divider bg-content1",
+          header: "border-b-2 border-divider",
+          footer: "border-t-2 border-divider",
+          closeButton: "hover:bg-danger-100 text-danger hover:text-danger active:bg-danger-200",
         }}
       >
-        <ModalContent className="min-h-[90vh] overflow-y-auto">
+        <ModalContent className="max-h-[90vh]">
           {(onClose) => (
             <>
-              <form onSubmit={handleSubmit} className=" h-full">
-                <ModalHeader className="flex flex-col gap-1">
-                  Create Your Post
+              <form onSubmit={handleSubmit} className="flex flex-col h-full max-h-[90vh]">
+                <ModalHeader className="flex items-center gap-2 flex-shrink-0">
+                  <PenSquare className="text-primary" size={20} />
+                  <span className="text-xl font-bold">Create Your Post</span>
+                  {(isSubmitting || isPending) && (
+                    <Loader2 className="ml-auto animate-spin text-primary" size={20} />
+                  )}
                 </ModalHeader>
-                <ModalBody className="flex flex-col mb-2 gap-4  ">
-                  <div className="">
-                    {/* Post title */}
-                    <div className="mb-6 ">
-                      <Input
-                        id="title"
-                        isRequired
-                        name="title"
-                        className="!text-primary"
-                        variant={"underlined"}
-                        label="Post Title"
-                        placeholder="Enter Post Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                      />
-                    </div>
 
-                    {/* Select Category */}
-                    <div className="mb-6 flex justify-between items-center gap-5">
-                      <Select
-                        isRequired
-                        id="category"
-                        name="category"
-                        className=""
-                        variant={"underlined"}
-                        label="Select your relevant Category"
-                        placeholder="Select a Category"
-                        value={selectedCategory}
-                        onChange={handleCategoryChange}
-                      >
-                        {postCategories.map((item) => (
-                          <SelectItem key={item} value={item}>
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </Select>
+                <ModalBody className="flex flex-col gap-5 overflow-y-auto flex-1">
+                  {/* Post Title */}
+                  <div>
+                    <Input
+                      id="title"
+                      isRequired
+                      name="title"
+                      variant="bordered"
+                      label="Post Title"
+                      placeholder="Enter an engaging title..."
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      size="lg"
+                      isDisabled={isSubmitting || isPending}
+                      classNames={{
+                        input: "text-base font-medium",
+                        inputWrapper: "border-2 border-default-200 hover:border-primary focus-within:border-primary",
+                      }}
+                    />
+                  </div>
+
+                  {/* Category and Premium */}
+                  <div className="flex gap-4 items-end">
+                    <Select
+                      isRequired
+                      id="category"
+                      name="category"
+                      variant="bordered"
+                      label="Category"
+                      placeholder="Select a category"
+                      value={selectedCategory}
+                      onChange={handleCategoryChange}
+                      size="lg"
+                      className="flex-1"
+                      isDisabled={isSubmitting || isPending}
+                      classNames={{
+                        trigger: "border-2 border-default-200 hover:border-primary",
+                      }}
+                    >
+                      {postCategories.map((item) => (
+                        <SelectItem key={item} value={item}>
+                          {item}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <div className="flex items-center gap-2 h-14 px-4 border-2 border-default-200 rounded-xl hover:border-warning transition-colors">
+                      <Crown size={18} className={isPremium ? "text-warning" : "text-default-400"} />
                       <Checkbox
                         isSelected={isPremium}
                         onValueChange={setIsPremium}
+                        color="warning"
+                        isDisabled={isSubmitting || isPending}
                       >
-                        Premium
+                        <span className="font-medium">Premium</span>
                       </Checkbox>
                     </div>
+                  </div>
 
-                    {/* Select Tags */}
-                    <div className="mb-6">
-                      <Select
-                        label="Select your relevant Tags"
-                        isRequired
-                        name="tags"
-                        variant={"underlined"}
-                        selectionMode="multiple"
-                        placeholder="Select Tags"
-                        selectedKeys={selectedTags}
-                        className=""
-                        onChange={handleSelectionChange}
-                      >
-                        {postTags.map((tag) => (
-                          <SelectItem key={tag} value={tag}>
-                            {tag}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    </div>
-
-                    {/* Sticky toolbar */}
-                    <div
-                      className="border border-gray-500 rounded-md p-2 overflow-hidden flex flex-col"
-                      style={{
-                        cursor: "text",
-                        borderRadius: "8px",
-                        height: "100%", // Full height for the container
+                  {/* Tags */}
+                  <div>
+                    <Select
+                      label="Tags"
+                      isRequired
+                      name="tags"
+                      variant="bordered"
+                      selectionMode="multiple"
+                      placeholder="Select relevant tags"
+                      selectedKeys={selectedTags}
+                      onSelectionChange={(keys) => setSelectedTags(keys as Set<string>)}
+                      size="lg"
+                      isDisabled={isSubmitting || isPending}
+                      classNames={{
+                        trigger: "border-2 border-default-200 hover:border-primary",
                       }}
+                      renderValue={(items) => (
+                        <div className="flex flex-wrap gap-1.5">
+                          {items.map((item) => (
+                            <Chip key={item.key} size="sm" color="primary" variant="flat">
+                              {item.key}
+                            </Chip>
+                          ))}
+                        </div>
+                      )}
                     >
-                      {/* Toolbar (Sticky at the top) */}
-                      <div
-                        className="sticky top-0 bg-default-50 z-10"
-                        style={{
-                          borderBottom: "1px solid #ccc", // Add border to separate toolbar from content
-                        }}
-                      >
-                        {/* Quill toolbar will automatically appear here */}
-                      </div>
+                      {postTags.map((tag) => (
+                        <SelectItem key={tag} value={tag}>
+                          #{tag}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </div>
 
-                      {/* Scrollable Text Area */}
-                      <div
-                        ref={quillRef}
-                        style={{
-                          height: "100%",
-                          background: "white", // Full height for the text editor area
-                          overflowY: "auto", // Make text area scrollable
-                          minHeight: "320px", // Minimum height for text editor area
-                          padding: "10px", // Add padding to text area
-                        }}
-                      />
+                  {/* Rich Text Editor */}
+                  <div className="min-h-[280px]">
+                    <div className={`border-2 border-default-200 rounded-xl overflow-hidden hover:border-primary transition-colors ${(isSubmitting || isPending) ? 'opacity-50 pointer-events-none' : ''
+                      }`}>
+                      {isOpen && (
+                        <QuillEditor
+                          key={editorKey}
+                          onImagesAdded={handleImagesAdded}
+                          isDisabled={isSubmitting || isPending}
+                          quillRef={quillInstanceRef}
+                        />
+                      )}
                     </div>
                   </div>
                 </ModalBody>
-                <ModalFooter className="justify-between">
-                  <div className="float-left flex gap-2 h-16">
-                    {pictures?.map((image, index) => (
-                      <Image
-                        key={index}
-                        src={URL.createObjectURL(image)}
-                        alt={"picture"}
-                        width={70}
-                        height={100}
-                        className="object-cover "
-                      />
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
-                    <Button color="primary" variant="light" onPress={onClose}>
-                      Close
-                    </Button>
-                    <Button
-                      className="bg-primary text-default-50 shadow-lg shadow-indigo-500/20"
-                      type="submit"
-                      // onPress={() => {
-                      //   onClose();
-                      // }}
-                    >
-                      Post
-                    </Button>
-                  </div>
+
+                <ModalFooter className="justify-between flex-shrink-0 items-center">
+                  <Button
+                    color="default"
+                    variant="flat"
+                    onPress={onClose}
+                    size="lg"
+                    isDisabled={isSubmitting || isPending}
+                  >
+                    Cancel
+                  </Button>
+                  
+                  {/* Image Previews */}
+                  {pictures.length > 0 && (
+                    <div className="flex gap-2 flex-wrap max-w-md">
+                      {pictures.map((image, index) => (
+                        <div key={index} className="relative group">
+                          <Image
+                            src={URL.createObjectURL(image)}
+                            alt={`preview-${index}`}
+                            width={50}
+                            height={50}
+                            className="object-cover rounded-lg border-2 border-default-200"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            disabled={isSubmitting || isPending}
+                            className="absolute -top-1.5 -right-1.5 bg-danger text-white rounded-full p-0.5 
+                                     opacity-0 group-hover:opacity-100 transition-opacity shadow-lg
+                                     disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <X size={12} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <Button
+                    color="primary"
+                    type="submit"
+                    size="lg"
+                    className="font-semibold shadow-lg shadow-primary/30"
+                    startContent={
+                      (isSubmitting || isPending) ?
+                        <Loader2 size={18} className="animate-spin" /> :
+                        <PenSquare size={18} />
+                    }
+                    isLoading={isSubmitting || isPending}
+                    isDisabled={isSubmitting || isPending}
+                  >
+                    {(isSubmitting || isPending) ? "Publishing..." : "Publish Post"}
+                  </Button>
                 </ModalFooter>
               </form>
             </>
