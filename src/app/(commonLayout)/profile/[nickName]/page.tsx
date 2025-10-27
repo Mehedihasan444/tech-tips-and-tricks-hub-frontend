@@ -32,7 +32,7 @@ const ProfilePage = async ({ params: { nickName } }: IProps) => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-4 ">
+    <div className=" mx-auto p-4 ">
       {/* Header Section */}
       <div className="sm:flex items-center justify-between mb-6 bg-default-50 p-3 shadow-md rounded-lg">
         <div className="flex items-center space-x-4">
