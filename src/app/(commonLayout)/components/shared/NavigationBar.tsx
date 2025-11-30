@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Button,
   Navbar,
@@ -8,9 +10,15 @@ import {
 import Searchbar from "../Searchbar";
 import ProfileDropdown from "../ProfileDropdown";
 import { ThemeSwitcher } from "./ThemeSwitcher";
-import { Bell, MessageSquareText } from "lucide-react";
+import { MessageSquareText } from "lucide-react";
+import NotificationsDropdown from "@/components/ui/NotificationsDropdown";
+import { useChatManager } from "@/components/ui/ChatManager";
+import { useSocket } from "@/context/socket.provider";
 
 export default function NavigationBar() {
+  const { toggleChatList } = useChatManager();
+  const { isConnected } = useSocket();
+
   return (
     <Navbar 
       maxWidth="full"
@@ -31,35 +39,21 @@ export default function NavigationBar() {
           <ThemeSwitcher />
         </NavbarItem>
 
-        {/* Notifications */}
+        {/* Real-time Notifications */}
         <NavbarItem>
-          <Badge 
-            content="5" 
-            color="danger" 
-            size="sm"
-            placement="top-right"
-            className="border-2 border-background"
-          >
-            <Button 
-              isIconOnly 
-              variant="light" 
-              radius="full"
-              className="hover:bg-default-100 transition-colors"
-              aria-label="Notifications"
-            >
-              <Bell size={20} className="text-default-600" />
-            </Button>
-          </Badge>
+          <NotificationsDropdown />
         </NavbarItem>
 
-        {/* Messages */}
+        {/* Messages - Opens Chat Manager */}
         <NavbarItem>
           <Badge 
-            content="3" 
+            content="" 
             color="primary" 
             size="sm"
             placement="top-right"
             className="border-2 border-background"
+            isInvisible={!isConnected}
+            isDot
           >
             <Button 
               isIconOnly 
@@ -67,6 +61,7 @@ export default function NavigationBar() {
               radius="full"
               className="hover:bg-default-100 transition-colors"
               aria-label="Messages"
+              onPress={toggleChatList}
             >
               <MessageSquareText size={20} className="text-default-600" />
             </Button>

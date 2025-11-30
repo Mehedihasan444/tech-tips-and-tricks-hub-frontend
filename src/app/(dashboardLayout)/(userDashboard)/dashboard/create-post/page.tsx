@@ -11,6 +11,7 @@ import { extractAndProcessImages } from "./_utils/extractAndProcessImages";
 import Image from "next/image";
 import { useCreatePost } from "@/hooks/post.hook";
 import { useUser } from "@/context/user.provider";
+import { PostDraft, deleteDraft } from "@/hooks/useDraftAutoSave";
 
 export default function CreatePost() {
   const { quill, quillRef } = useQuill();
@@ -19,12 +20,37 @@ export default function CreatePost() {
   const [selectedTags, setSelectedTags] = useState(new Set([]));
   const [pictures, setPictures] = useState<File[] | []>([]);
   const [isPremium, setIsPremium] = useState(false);
+  const [loadedDraftId, setLoadedDraftId] = useState<string | null>(null);
   const { user } = useUser();
   const {
     mutate: handleCreatePost,
     // isPending: createPostPending,
     isSuccess,
+    reset: resetMutation,
   } = useCreatePost();
+
+  // Load draft from localStorage if navigating from drafts page
+  useEffect(() => {
+    const loadDraftData = localStorage.getItem('loadDraft');
+    if (loadDraftData && quill) {
+      try {
+        const draft: PostDraft = JSON.parse(loadDraftData);
+        setTitle(draft.title || '');
+        setSelectedCategory(draft.category || '');
+        setSelectedTags(new Set(draft.tags || []) as any);
+        setIsPremium(draft.isPremium || false);
+        if (draft.content) {
+          quill.root.innerHTML = draft.content;
+        }
+        setLoadedDraftId(draft.id);
+        // Clear the loadDraft from localStorage after loading
+        localStorage.removeItem('loadDraft');
+        toast.success('Draft loaded successfully!');
+      } catch (error) {
+        console.error('Error loading draft:', error);
+      }
+    }
+  }, [quill]);
 
   const handleSelectionChange = (e: any) => {
     setSelectedTags(new Set(e.target.value.split(",")));
@@ -53,15 +79,29 @@ export default function CreatePost() {
       const toolbar = quill.getModule("toolbar") as any; // Cast as 'any' if type is not available
       toolbar.addHandler("image", selectLocalImage);
     }
+  }, [quill]);
 
+  // Handle successful post creation
+  useEffect(() => {
     if (isSuccess) {
       setSelectedCategory(""); // Reset category
       setSelectedTags(new Set([])); // Reset tags
+      setTitle(""); // Reset title
+      setPictures([]); // Reset pictures
+      setIsPremium(false); // Reset premium
       if (quill) {
         quill.setText(""); // Reset quill editor
       }
+      // Delete the draft if post was created from a draft
+      if (loadedDraftId) {
+        deleteDraft(loadedDraftId);
+        setLoadedDraftId(null);
+      }
+      // Reset mutation state to prevent re-triggering
+      resetMutation();
     }
-  }, [quill, isSuccess, pictures]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
 
   // Handle category change
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

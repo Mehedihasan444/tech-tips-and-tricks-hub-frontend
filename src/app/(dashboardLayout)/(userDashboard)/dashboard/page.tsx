@@ -1,17 +1,23 @@
 "use client"
 import React from "react";
-import { User, BarChart2, FileText, Activity, DollarSign, Users } from "lucide-react";
+import { User, BarChart2, FileText, DollarSign, Users, FolderOpen } from "lucide-react";
 import { useUser } from "@/context/user.provider";
+import Link from "next/link";
 
 const DashboardPage = () => {
   const { user } = useUser()
+  
+  // Calculate real stats from user data
+  const followersCount = user?.followers?.length || 0;
+  const followingCount = user?.following?.length || 0;
+  
   return (
     // bg-gradient-to-r from-blue-100 to-teal-100
     <div className="min-h-screen  p-6">
       {/* Welcome Section */}
       <div className="mb-8">
         <h2 className="text-4xl font-bold text-default-800 mb-2">
-          Welcome back, John Doe! 👋
+          Welcome back, {user?.name || 'User'}! 👋
         </h2>
         <p className="text-lg text-default-600">
           Here&apos;s an overview of your account and recent activities.
@@ -32,6 +38,9 @@ const DashboardPage = () => {
           <p className="text-default-600 mb-2">
             <strong>Email:</strong> {user?.email}
           </p>
+          <p className="text-default-600 mb-2">
+            <strong>Username:</strong> @{user?.nickName || 'N/A'}
+          </p>
           <p className="text-default-600">
             <strong>Member Since:</strong> {user?.createdAt?.split('T')[0]}
           </p>
@@ -41,31 +50,23 @@ const DashboardPage = () => {
         <div className="bg-default-50 shadow-lg hover:shadow-xl transition-shadow rounded-lg p-6">
           <div className="flex items-center mb-4">
             <BarChart2 className="text-teal-600 w-6 h-6 mr-2" />
-            <h3 className="text-2xl font-semibold text-default-800">Analytics</h3>
+            <h3 className="text-2xl font-semibold text-default-800">Quick Stats</h3>
           </div>
           <p className="text-default-600 mb-2">
-            <strong>Total Posts:</strong> 24
-
+            <strong>Followers:</strong> {followersCount}
           </p>
           <p className="text-default-600 mb-2">
-            <strong>Followers:</strong> 120
+            <strong>Following:</strong> {followingCount}
           </p>
           <p className="text-default-600">
-            <strong>Total Upvotes:</strong> 340
+            <strong>Status:</strong> {user?.isPremium ? '⭐ Premium Member' : 'Free Account'}
           </p>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="bg-default-50 shadow-lg hover:shadow-xl transition-shadow rounded-lg p-6">
-          <div className="flex items-center mb-4">
-            <Activity className="text-teal-600 w-6 h-6 mr-2" />
-            <h3 className="text-2xl font-semibold text-default-800">Recent Activity</h3>
-          </div>
-          <ul className="list-disc list-inside text-default-600">
-            <li>Published a new post on &quot;Tech Trends 2024&quot;</li>
-            <li>Updated profile picture</li>
-            <li>Gained 5 new followers</li>
-          </ul>
+          <Link
+            href="/dashboard/analytics"
+            className="inline-block mt-3 text-teal-600 font-medium hover:underline hover:text-teal-800 transition duration-300"
+          >
+            View Full Analytics →
+          </Link>
         </div>
 
         {/* My Posts */}
@@ -75,14 +76,31 @@ const DashboardPage = () => {
             <h3 className="text-2xl font-semibold text-default-800">My Posts</h3>
           </div>
           <p className="text-default-600 mb-4">
-            Manage your posts, filter, and view their statistics.
+            Manage your posts, view statistics, and create new content.
           </p>
-          <a
-            href="/dashboard/myposts"
+          <Link
+            href="/dashboard/my-posts"
             className="text-teal-600 font-medium hover:underline hover:text-teal-800 transition duration-300"
           >
-            Go to My Posts
-          </a>
+            Go to My Posts →
+          </Link>
+        </div>
+
+        {/* My Drafts */}
+        <div className="bg-default-50 shadow-lg hover:shadow-xl transition-shadow rounded-lg p-6">
+          <div className="flex items-center mb-4">
+            <FolderOpen className="text-amber-600 w-6 h-6 mr-2" />
+            <h3 className="text-2xl font-semibold text-default-800">My Drafts</h3>
+          </div>
+          <p className="text-default-600 mb-4">
+            Continue working on your saved drafts and unpublished content.
+          </p>
+          <Link
+            href="/dashboard/drafts"
+            className="text-teal-600 font-medium hover:underline hover:text-teal-800 transition duration-300"
+          >
+            View Drafts →
+          </Link>
         </div>
 
         {/* Payments */}
@@ -92,31 +110,31 @@ const DashboardPage = () => {
             <h3 className="text-2xl font-semibold text-default-800">Payments</h3>
           </div>
           <p className="text-default-600 mb-4">
-            View your payment history and upcoming invoices.
+            View your payment history and subscription status.
           </p>
-          <a
+          <Link
             href="/dashboard/payments"
             className="text-teal-600 font-medium hover:underline hover:text-teal-800 transition duration-300"
           >
-            Go to Payments
-          </a>
+            Go to Payments →
+          </Link>
         </div>
 
         {/* Followed Activities */}
         <div className="bg-default-50 shadow-lg hover:shadow-xl transition-shadow rounded-lg p-6">
           <div className="flex items-center mb-4">
             <Users className="text-teal-600 w-6 h-6 mr-2" />
-            <h3 className="text-2xl font-semibold text-default-800">Followed Activities</h3>
+            <h3 className="text-2xl font-semibold text-default-800">Following Activity</h3>
           </div>
           <p className="text-default-600 mb-4">
-            Stay updated with the activities of the people you&apos;re following.
+            Stay updated with the activities of the {followingCount} people you&apos;re following.
           </p>
-          <a
-            href="/dashboard/following"
+          <Link
+            href="/dashboard/following-activity"
             className="text-teal-600 font-medium hover:underline hover:text-teal-800 transition duration-300"
           >
-            View Followed Activities
-          </a>
+            View Activity →
+          </Link>
         </div>
       </div>
     </div>

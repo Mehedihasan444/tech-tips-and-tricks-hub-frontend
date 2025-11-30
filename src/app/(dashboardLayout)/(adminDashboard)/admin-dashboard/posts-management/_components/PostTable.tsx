@@ -86,17 +86,17 @@ const PostTable = () => {
         case "author":
           return (
             <div className="text-secondary">
-              {typeof cellValue === "object" ? (
+              {post.author ? (
                 <div>
                   <User
-                    name={cellValue?.name}
+                    name={post.author?.name}
                     description={
-                      <Link href={`/profile/${cellValue?.nickName}`}>
-                        {cellValue?.nickName}
+                      <Link href={`/profile/${post.author?.nickName}`}>
+                        {post.author?.nickName}
                       </Link>
                     }
                     avatarProps={{
-                      src: `${cellValue?.profilePhoto}`,
+                      src: `${post.author?.profilePhoto}`,
                     }}
                     className="text-default-900"
                   />

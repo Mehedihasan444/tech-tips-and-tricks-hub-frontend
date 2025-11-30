@@ -15,6 +15,7 @@ import {
   CrownIcon, 
   SquareUser, 
   LayoutDashboard,
+  FileText,
   Info,
   Mail,
   HelpCircle,
@@ -136,6 +137,15 @@ export default function ProfileDropdown() {
             className="py-3"
           >
             <span className="font-medium">Dashboard</span>
+          </DropdownItem>
+          <DropdownItem
+            key="drafts"
+            startContent={<FileText size={18} className="text-warning" />}
+            endContent={<ChevronRight size={16} className="text-default-400" />}
+            onClick={() => handleNavigation("/dashboard/drafts")}
+            className="py-3"
+          >
+            <span className="font-medium">My Drafts</span>
           </DropdownItem>
         </DropdownSection>
 

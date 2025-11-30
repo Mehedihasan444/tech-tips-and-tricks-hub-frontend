@@ -42,8 +42,11 @@ const PostTable = ({ posts }: { posts: TPost[] }) => {
     const { column, order } = sortedBy;
     const sortOrder = order === "asc" ? 1 : -1;
     return [...posts].sort((a, b) => {
-      if (a[column] > b[column]) return sortOrder;
-      if (a[column] < b[column]) return -sortOrder;
+      const aValue = a[column];
+      const bValue = b[column];
+      if (aValue === undefined || bValue === undefined) return 0;
+      if (aValue > bValue) return sortOrder;
+      if (aValue < bValue) return -sortOrder;
       return 0;
     });
   }, [posts, sortedBy]);

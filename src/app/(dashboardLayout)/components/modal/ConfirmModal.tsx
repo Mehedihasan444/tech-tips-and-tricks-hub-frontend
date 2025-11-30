@@ -11,8 +11,9 @@ import {
   Button,
   useDisclosure,
   Tooltip,
+  Spinner,
 } from "@nextui-org/react";
-import { Trash2 } from "lucide-react";
+import { Trash2, AlertTriangle } from "lucide-react";
 
 export default function DeleteConfirmationModal({
   item,
@@ -23,48 +24,85 @@ export default function DeleteConfirmationModal({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { mutate: handleDeleteUser, isPending: isUserLoading } =
-    useDeleteUser(); // Use update post hook
+    useDeleteUser();
   const { mutate: handleDeletePost, isPending: isPostLoading } =
-    useDeletePost(); // Use update post hook
+    useDeletePost();
+
+  const isLoading = title === "user" ? isUserLoading : isPostLoading;
 
   const handleDelete = () => {
     if (title === "user") {
       handleDeleteUser({ userId: item._id });
-    } else if (title === "post"){
+    } else if (title === "post") {
       handleDeletePost({ postId: item._id });
     }
   };
 
   return (
     <>
-      <Button onPress={onOpen} className="bg-transparent">
+      <Button onPress={onOpen} className="bg-transparent min-w-0 p-0">
         <Tooltip color="danger" content={`Delete ${title}`}>
-          <Trash2 className="text-danger" />
+          <Trash2 className="text-danger hover:scale-110 transition-transform" />
         </Tooltip>
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
+      <Modal 
+        isOpen={isOpen} 
+        onOpenChange={onOpenChange} 
+        placement="center"
+        backdrop="blur"
+        isDismissable={!isLoading}
+        hideCloseButton={isLoading}
+        classNames={{
+          backdrop: "bg-black/50 backdrop-blur-sm",
+          base: "border border-divider",
+        }}
+      >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                Delete User
+              <ModalHeader className="flex flex-col items-center gap-2 pt-6">
+                <div className="p-3 rounded-full bg-danger-100">
+                  <AlertTriangle className="w-8 h-8 text-danger" />
+                </div>
+                <h3 className="text-xl font-bold text-center">
+                  Delete {title.charAt(0).toUpperCase() + title.slice(1)}
+                </h3>
               </ModalHeader>
-              <ModalBody>
-                <p>
-                  Are you sure you want to delete the {title}{" "}
-                  <strong>{item?.name}</strong>? This action cannot be undone.
+              <ModalBody className="text-center pb-2">
+                <p className="text-default-500">
+                  Are you sure you want to delete{" "}
+                  <strong className="text-foreground">{item?.name || item?.title}</strong>?
+                </p>
+                <p className="text-sm text-danger-500 mt-2">
+                  This action cannot be undone.
                 </p>
               </ModalBody>
-              <ModalFooter>
-                <Button color="default" variant="flat" onPress={onClose}>
+              <ModalFooter className="flex gap-2 justify-center pb-6">
+                <Button 
+                  variant="flat" 
+                  onPress={onClose}
+                  isDisabled={isLoading}
+                  className="font-medium"
+                >
                   Cancel
                 </Button>
                 <Button
                   color="danger"
                   onPress={handleDelete}
-                  isLoading={title === "user" ? isUserLoading : isPostLoading}
+                  isDisabled={isLoading}
+                  className="font-medium"
                 >
-                  Delete
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <Spinner size="sm" color="current" />
+                      <span>Deleting...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Trash2 className="w-4 h-4" />
+                      <span>Delete</span>
+                    </div>
+                  )}
                 </Button>
               </ModalFooter>
             </>
@@ -73,12 +111,4 @@ export default function DeleteConfirmationModal({
       </Modal>
     </>
   );
-}
-{
-  /* <span
-onClick={}
-className="text-lg text-danger cursor-pointer active:opacity-50"
->
-<Trash2 />
-</span> */
 }

@@ -26,17 +26,24 @@ import { useCreatePost } from "@/hooks/post.hook";
 import { extractAndProcessImages } from "@/app/(dashboardLayout)/(userDashboard)/dashboard/create-post/_utils/extractAndProcessImages";
 import Image from "next/image";
 import { useUser } from "@/context/user.provider";
-import { PenSquare, X , Crown, Loader2 } from "lucide-react";
+import { PenSquare, X, Crown, Loader2 } from "lucide-react";
+import { useDraftAutoSave, deleteDraft } from "@/hooks/useDraftAutoSave";
+import DraftStatus from "@/components/ui/DraftStatus";
+import AIAssistantPanel from "@/components/ui/AIAssistantPanel";
 
 // Separate component for the editor to ensure proper reinitialization
 function QuillEditor({
   onImagesAdded,
   isDisabled,
-  quillRef: externalQuillRef
+  quillRef: externalQuillRef,
+  initialContent,
+  onContentChange,
 }: {
   onImagesAdded: (files: File[]) => void;
   isDisabled: boolean;
   quillRef: React.MutableRefObject<any>;
+  initialContent?: string;
+  onContentChange?: (content: string) => void;
 }) {
   const { quill, quillRef } = useQuill();
 
@@ -67,8 +74,20 @@ function QuillEditor({
 
       // Enable/disable editor based on isDisabled prop
       quill.enable(!isDisabled);
+
+      // Set initial content if provided
+      if (initialContent && quill.root.innerHTML === '<p><br></p>') {
+        quill.root.innerHTML = initialContent;
+      }
+
+      // Listen for content changes
+      if (onContentChange) {
+        quill.on('text-change', () => {
+          onContentChange(quill.root.innerHTML);
+        });
+      }
     }
-  }, [quill, onImagesAdded, isDisabled, externalQuillRef]);
+  }, [quill, onImagesAdded, isDisabled, externalQuillRef, initialContent, onContentChange]);
 
   return (
     <div
@@ -91,13 +110,59 @@ export default function CreatePost() {
   const [pictures, setPictures] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editorKey, setEditorKey] = useState(0); // Key to force remount
+  const [editorContent, setEditorContent] = useState("");
+  const [initialEditorContent, setInitialEditorContent] = useState("");
   const quillInstanceRef = useRef<any>(null);
   const { user } = useUser();
   const {
     mutate: handleCreatePost,
     isSuccess,
     isPending,
+    reset: resetMutation,
   } = useCreatePost();
+
+  // Draft auto-save hook
+  const {
+    currentDraftId,
+    isSaving: isDraftSaving,
+    hasUnsavedChanges,
+    scheduleSave,
+    // discardDraft,
+    getLastSavedText,
+  } = useDraftAutoSave({
+    showNotifications: false, // Don't show toast for every save
+  });
+
+  // Auto-save draft when content changes
+  useEffect(() => {
+    if (isOpen && (title || editorContent)) {
+      scheduleSave({
+        title,
+        content: editorContent,
+        category: selectedCategory,
+        tags: Array.from(selectedTags),
+        isPremium,
+      });
+    }
+  }, [isOpen, title, editorContent, selectedCategory, selectedTags, isPremium, scheduleSave]);
+
+  // // Handle loading a draft
+  // const handleLoadDraft = useCallback((draft: PostDraft) => {
+  //   setTitle(draft.title);
+  //   setSelectedCategory(draft.category);
+  //   setSelectedTags(new Set(draft.tags));
+  //   setIsPremium(draft.isPremium);
+  //   setInitialEditorContent(draft.content);
+  //   setEditorContent(draft.content);
+  //   setEditorKey(prev => prev + 1); // Force editor remount with new content
+  //   onOpen();
+  //   toast.success('Draft loaded!');
+  // }, [onOpen]);
+
+  // Handle content change from editor
+  const handleContentChange = useCallback((content: string) => {
+    setEditorContent(content);
+  }, []);
 
   // Force remount editor when modal opens
   useEffect(() => {
@@ -129,6 +194,8 @@ export default function CreatePost() {
     setPictures([]);
     setIsPremium(false);
     setIsSubmitting(false);
+    setEditorContent("");
+    setInitialEditorContent("");
 
     if (quillInstanceRef.current) {
       try {
@@ -149,14 +216,19 @@ export default function CreatePost() {
     }
   }, [isOpen, isSubmitting, isPending, resetForm]);
 
-  // Handle successful post creation
+  // Handle successful post creation - also delete the draft
   useEffect(() => {
-    if (isSuccess) {
-      toast.success("Post created successfully!");
+    if (isSuccess && !isSubmitting) {
+      // Delete the draft since post was published
+      if (currentDraftId) {
+        deleteDraft(currentDraftId);
+      }
       resetForm();
+      resetMutation(); // Reset mutation state to prevent re-triggering
       onOpenChange();
     }
-  }, [isSuccess, resetForm, onOpenChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
 
   // Validate form before submission
   const validateForm = useCallback((): boolean => {
@@ -268,6 +340,10 @@ export default function CreatePost() {
       >
         Create Post
       </Button>
+
+      {/* Drafts Manager Button */}
+      {/* <DraftsManager onLoadDraft={handleLoadDraft} /> */}
+
       <Modal
         backdrop="blur"
         isOpen={isOpen}
@@ -289,11 +365,30 @@ export default function CreatePost() {
           {(onClose) => (
             <>
               <form onSubmit={handleSubmit} className="flex flex-col h-full max-h-[90vh]">
-                <ModalHeader className="flex items-center gap-2 flex-shrink-0">
+                <ModalHeader className="flex items-center gap-2 flex-shrink-0 flex-wrap">
                   <PenSquare className="text-primary" size={20} />
                   <span className="text-xl font-bold">Create Your Post</span>
+                  <div className="flex-1" />
+                  <DraftStatus
+                    isSaving={isDraftSaving}
+                    hasUnsavedChanges={hasUnsavedChanges}
+                    lastSavedText={getLastSavedText()}
+                  />
+                  <AIAssistantPanel
+                    content={editorContent}
+                    title={title}
+                    category={selectedCategory}
+                    availableTags={postTags}
+                    onTitleSelect={(newTitle) => setTitle(newTitle)}
+                    onTagsSelect={(tags) => setSelectedTags(new Set(tags))}
+                    onContentImprove={(improved) => {
+                      setInitialEditorContent(improved);
+                      setEditorContent(improved);
+                      setEditorKey(prev => prev + 1);
+                    }}
+                  />
                   {(isSubmitting || isPending) && (
-                    <Loader2 className="ml-auto animate-spin text-primary" size={20} />
+                    <Loader2 className="animate-spin text-primary" size={20} />
                   )}
                 </ModalHeader>
 
@@ -399,6 +494,8 @@ export default function CreatePost() {
                           onImagesAdded={handleImagesAdded}
                           isDisabled={isSubmitting || isPending}
                           quillRef={quillInstanceRef}
+                          initialContent={initialEditorContent}
+                          onContentChange={handleContentChange}
                         />
                       )}
                     </div>

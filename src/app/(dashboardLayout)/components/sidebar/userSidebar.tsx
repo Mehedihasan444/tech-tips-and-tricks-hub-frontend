@@ -7,6 +7,7 @@ import {
   Users,
   Edit,
   BadgePlus,
+  FolderOpen,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -55,6 +56,12 @@ export const SidebarWrapper = () => {
                 title="My Posts"
                 icon={<FileText />}
                 href="/dashboard/my-posts"
+              />
+              <SidebarItem
+                isActive={pathname === "/dashboard/drafts"}
+                title="My Drafts"
+                icon={<FolderOpen />}
+                href="/dashboard/drafts"
               />
 
               <CollapseItems

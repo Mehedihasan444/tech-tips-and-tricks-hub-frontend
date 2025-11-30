@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Link, Tooltip, Avatar } from "@nextui-org/react";
+import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Link, Tooltip, Avatar, Badge } from "@nextui-org/react";
 import { ThumbsDown, ThumbsUp, Share2, MessageCircle, Bookmark, Clock, Crown, TrendingUp, MoreVertical, Eye } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import MediaGallery from "./MediaGallery";
@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { getAllCommentsOfASinglePost } from "@/services/CommentService";
 import { IUser } from "@/types/IUser";
 import { formatDistanceToNow } from 'date-fns';
+import { useSocket } from "@/context/socket.provider";
 
 const CHARACTER_LIMIT = 300;
 
@@ -25,9 +26,11 @@ const PostCard = ({ post }: { post: any }) => {
   const { user: loggedInUser } = useUser();
   const [isExpanded, setIsExpanded] = useState(false);
   const { mutate: handleUpdatePost } = useUpdatePost();
+  const { onlineUsers } = useSocket();
   const user = post?.author;
   const router = useRouter();
 
+  const isAuthorOnline = user?._id && onlineUsers.includes(user._id);
   const isPremiumLocked = post?.isPremium && !loggedInUser?.isPremium && post?.author?.nickName !== loggedInUser?.nickName;
 
   const handleShare = async () => {
@@ -111,13 +114,22 @@ const PostCard = ({ post }: { post: any }) => {
             {/* User Info */}
             <div className="flex gap-3 flex-1">
               <Link href={`/profile/${user?.nickName}`}>
-                <Avatar
-                  src={user?.profilePhoto}
-                  size="lg"
-                  isBordered
-                  color={user?.isPremium ? 'warning' : 'primary'}
-                  className="flex-shrink-0 hover:scale-105 transition-transform cursor-pointer"
-                />
+                <Badge
+                  content=""
+                  color="success"
+                  size="sm"
+                  placement="bottom-right"
+                  isInvisible={!isAuthorOnline}
+                  shape="circle"
+                >
+                  <Avatar
+                    src={user?.profilePhoto}
+                    size="lg"
+                    isBordered
+                    color={user?.isPremium ? 'warning' : 'primary'}
+                    className="flex-shrink-0 hover:scale-105 transition-transform cursor-pointer"
+                  />
+                </Badge>
               </Link>
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">

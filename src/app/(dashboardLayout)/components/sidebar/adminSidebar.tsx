@@ -8,10 +8,11 @@ import {
   Banknote,
   CreditCardIcon,
   FileClock,
-  FileStack,
   FileText,
   Home,
   User,
+  Activity,
+  Flag,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -43,53 +44,63 @@ export const AdminSidebarWrapper = () => {
         <div className="flex flex-col justify-between h-full">
           <div className={Sidebar.Body()}>
             <SidebarItem
-              title="Home"
+              title="Dashboard"
               icon={<Home />}
               isActive={pathname === "/admin-dashboard"}
               href="/admin-dashboard"
             />
-            <SidebarMenu title="Main Menu">
+            <SidebarMenu title="Management">
               <SidebarItem
                 isActive={pathname === "/admin-dashboard/posts-management"}
-                title="posts manage"
+                title="Manage Posts"
                 icon={<FileText />}
                 href="/admin-dashboard/posts-management"
               />
               <SidebarItem
                 isActive={pathname === "/admin-dashboard/users-management"}
-                title="users manage"
+                title="Manage Users"
                 icon={<User />}
                 href="/admin-dashboard/users-management"
               />
               <CollapseItems
                 icon={<Banknote />}
-                title="Amount Transactions"
+                title="Transactions"
                 items={[
                   {
-                    title: "Author",
+                    title: "Author Transactions",
                     icon: <BackpackIcon />,
-                    href : "/admin-dashboard/author-transactions",
+                    href: "/admin-dashboard/author-transactions",
                   },
                   {
-                    title: "User",
+                    title: "User Transactions",
                     icon: <CreditCardIcon />,
-                    href : "/admin-dashboard/user-transactions",
+                    href: "/admin-dashboard/user-transactions",
                   },
                 ]}
               />
+            </SidebarMenu>
 
+            <SidebarMenu title="Monitoring">
               <SidebarItem
-                isActive={pathname === "/reports"}
+                isActive={pathname === "/admin-dashboard/reports"}
                 title="Reports"
-                icon={<FileStack />}
+                icon={<Flag />}
+                href="/admin-dashboard/reports"
+              />
+              <SidebarItem
+                isActive={pathname === "/admin-dashboard/activity-logs"}
+                title="Activity Logs"
+                icon={<Activity />}
+                href="/admin-dashboard/activity-logs"
               />
             </SidebarMenu>
 
-            <SidebarMenu title="Updates">
+            <SidebarMenu title="System">
               <SidebarItem
-                isActive={pathname === "/changelog"}
+                isActive={pathname === "/admin-dashboard/changelog"}
                 title="Changelog"
                 icon={<FileClock />}
+                href="/admin-dashboard/changelog"
               />
             </SidebarMenu>
           </div>

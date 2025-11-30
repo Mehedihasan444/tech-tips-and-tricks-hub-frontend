@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Card, Avatar, Button, Chip, Spinner } from '@nextui-org/react';
+import { Card, Avatar, Button, Chip } from '@nextui-org/react';
 import { Users } from "lucide-react";
-import NavigationBar from '../components/shared/NavigationBar';
-import Sidebar from '../components/Sidebar';
 import { getFriends } from '@/services/FriendsService';
+import EmptyState from '@/components/ui/EmptyState';
+import { useRouter } from 'next/navigation';
+import { UserCardSkeleton } from '@/components/ui/Skeleton';
 
 // Define the Friend type
 interface Friend {
@@ -21,60 +23,35 @@ const MyFriendsPage = () => {
     const [friends, setFriends] = useState<Friend[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchFriends = async () => {
             try {
                 setLoading(true);
-                // Replace with your actual API endpoint
                 const response = await getFriends();
                 console.log(response);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch friends');
-                }
                 
-                const data = await response.json();
-                setFriends(data);
-                setError(null);
+                // getFriends returns { success, data } from axios
+                if (response?.success && response?.data) {
+                    // Transform the data to match the Friend interface
+                    const friendsData = response.data.map((friend: any) => ({
+                        id: friend._id,
+                        name: friend.name || friend.nickName || 'Unknown',
+                        status: 'Offline', // You can implement online status check
+                        avatar: friend.profilePhoto || `https://i.pravatar.cc/150?u=${friend._id}`,
+                        profession: friend.bio || 'Tech Enthusiast',
+                        mutualFriends: friend.followers?.length || 0
+                    }));
+                    setFriends(friendsData);
+                    setError(null);
+                } else {
+                    setFriends([]);
+                }
             } catch (err) {
                 console.error('Error fetching friends:', err);
                 setError('Failed to load friends. Please try again later.');
-                
-                // Fallback to sample data for development
-                setFriends([
-                    {
-                        id: '1',
-                        name: 'John Doe',
-                        status: 'Online',
-                        avatar: 'https://i.pravatar.cc/150?u=1',
-                        profession: 'Software Engineer',
-                        mutualFriends: 12
-                    },
-                    {
-                        id: '2',
-                        name: 'Jane Smith',
-                        status: 'Offline',
-                        avatar: 'https://i.pravatar.cc/150?u=2',
-                        profession: 'UX Designer',
-                        mutualFriends: 8
-                    },
-                    {
-                        id: '3',
-                        name: 'Alice Johnson',
-                        status: 'Online',
-                        avatar: 'https://i.pravatar.cc/150?u=3',
-                        profession: 'Product Manager',
-                        mutualFriends: 15
-                    },
-                    {
-                        id: '4',
-                        name: 'Bob Brown',
-                        status: 'Offline',
-                        avatar: 'https://i.pravatar.cc/150?u=4',
-                        profession: 'Data Scientist',
-                        mutualFriends: 5
-                    },
-                ]);
+                setFriends([]);
             } finally {
                 setLoading(false);
             }
@@ -84,30 +61,38 @@ const MyFriendsPage = () => {
     }, []);
 
     return (
-        <div className="flex gap-4 ">
-            <Sidebar />
-            <div className="flex-1">
-                <NavigationBar />
-                <div className="p-4 max-w-5xl mx-auto">
-                    <div className="flex items-center gap-2 mb-8">
-                        <Users className="text-3xl text-primary" />
-                        <h1 className="text-3xl font-bold">My Friends</h1>
-                    </div>
+        <div className="p-4 max-w-5xl mx-auto">
+            <div className="flex items-center gap-2 mb-8">
+                <Users className="text-3xl text-primary" />
+                <h1 className="text-3xl font-bold">My Friends</h1>
+            </div>
 
-                    {loading ? (
-                        <div className="flex justify-center items-center h-64">
-                            <Spinner size="lg" color="primary" />
-                        </div>
-                    ) : error ? (
-                        <div className="text-center p-8 bg-danger-50 text-danger rounded-lg">
-                            <p>{error}</p>
-                            <Button 
-                                color="primary" 
-                                className="mt-4"
-                                onClick={() => window.location.reload()}
-                            >
-                                Try Again
-                            </Button>
+            {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[...Array(6)].map((_, i) => (
+                        <UserCardSkeleton key={i} />
+                    ))}
+                </div>
+            ) : error ? (
+                <div className="text-center p-8 bg-danger-50 text-danger rounded-lg">
+                    <p>{error}</p>
+                    <Button 
+                        color="primary" 
+                        className="mt-4"
+                        onClick={() => window.location.reload()}
+                    >
+                        Try Again
+                    </Button>
+                </div>
+            ) : friends.length === 0 ? (
+                <div className="bg-content1 rounded-2xl border border-divider">
+                    <EmptyState 
+                                type="friends"
+                                title="No Friends Yet"
+                                description="Start connecting with people who share your interests! Find and follow users to build your network."
+                                actionLabel="Discover People"
+                                onAction={() => router.push("/community")}
+                            />
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -153,8 +138,6 @@ const MyFriendsPage = () => {
                             ))}
                         </div>
                     )}
-                </div>
-            </div>
         </div>
     );
 };

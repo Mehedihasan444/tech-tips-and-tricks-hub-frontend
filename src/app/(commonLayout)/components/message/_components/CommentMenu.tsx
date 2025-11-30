@@ -1,12 +1,19 @@
 "use client";
-import React, { Dispatch } from "react";
+import React, { Dispatch, useState } from "react";
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Spinner,
 } from "@nextui-org/react";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, AlertTriangle, Trash2 } from "lucide-react";
 import { TComment } from "@/types/TComment";
 import { useDeleteComment } from "@/hooks/comment.hook";
 import { useUser } from "@/context/user.provider";
@@ -28,11 +35,22 @@ const CommentMenu = ({
   setUpdateComment: Dispatch<boolean>;
   post: TPost;
 }) => {
-  const { mutate: deleteComment } = useDeleteComment();
+  const { mutate: deleteComment, isPending: isDeleting } = useDeleteComment();
   const { user } = useUser();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState<{ commentId: string; postId: string } | null>(null);
 
-  const handleDelete = (commentId: string, postId: string) => {
-    deleteComment({ commentId, postId });
+  const openDeleteModal = (commentId: string, postId: string) => {
+    setCommentToDelete({ commentId, postId });
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (commentToDelete) {
+      deleteComment(commentToDelete);
+      setIsDeleteModalOpen(false);
+      setCommentToDelete(null);
+    }
   };
 
   const handleEdit = () => {
@@ -73,7 +91,7 @@ const CommentMenu = ({
                     key="delete"
                     color="danger"
                     className="text-danger"
-                    onClick={() => handleDelete(comment._id, comment.postId)}
+                    onClick={() => openDeleteModal(comment._id, comment.postId)}
                   >
                     Delete
                   </DropdownItem>
@@ -96,6 +114,65 @@ const CommentMenu = ({
             Reply
           </button>
         </div>
+
+        {/* Delete Confirmation Modal */}
+        <Modal 
+          isOpen={isDeleteModalOpen} 
+          onClose={() => setIsDeleteModalOpen(false)}
+          size="sm"
+          backdrop="blur"
+          isDismissable={!isDeleting}
+          hideCloseButton={isDeleting}
+          classNames={{
+            backdrop: "bg-black/50 backdrop-blur-sm",
+            base: "border border-divider",
+          }}
+        >
+          <ModalContent>
+            <ModalHeader className="flex flex-col items-center gap-2 pt-6">
+              <div className="p-3 rounded-full bg-danger-100">
+                <AlertTriangle className="w-8 h-8 text-danger" />
+              </div>
+              <h3 className="text-xl font-bold text-center">Delete Comment</h3>
+            </ModalHeader>
+            <ModalBody className="text-center pb-2">
+              <p className="text-default-500">
+                Are you sure you want to delete this comment?
+              </p>
+              <p className="text-sm text-danger-500 mt-2">
+                This action cannot be undone.
+              </p>
+            </ModalBody>
+            <ModalFooter className="flex gap-2 justify-center pb-6">
+              <Button 
+                variant="flat" 
+                onPress={() => setIsDeleteModalOpen(false)}
+                isDisabled={isDeleting}
+                className="font-medium"
+              >
+                Cancel
+              </Button>
+              <Button
+                color="danger"
+                onPress={handleConfirmDelete}
+                isDisabled={isDeleting}
+                className="font-medium"
+              >
+                {isDeleting ? (
+                  <div className="flex items-center gap-2">
+                    <Spinner size="sm" color="current" />
+                    <span>Deleting...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Trash2 className="w-4 h-4" />
+                    <span>Delete</span>
+                  </div>
+                )}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </>
     );
   }
