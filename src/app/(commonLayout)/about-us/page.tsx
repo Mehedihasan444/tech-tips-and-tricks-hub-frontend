@@ -8,7 +8,7 @@ import aboutUs from "@/assets/aboutUs.jpg";
 
 const AboutPage = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen p-4">
       {/* Header */}
       <header
         className="text-white py-20 text-center bg-center bg-cover bg-no-repeat"
