@@ -199,7 +199,7 @@ const RegisterForm = () => {
         {errors && <p className="text-red-500 text-center text-sm">{errors}</p>}
 
         {/* Submit button */}
-        <SubmitBtn text="Register" isLoading={isPending} />
+        <SubmitBtn text="Create Account" loadingText="Creating account..." isLoading={isPending || isloginPending} />
 
         {/* Divider */}
         <FormDivider />
