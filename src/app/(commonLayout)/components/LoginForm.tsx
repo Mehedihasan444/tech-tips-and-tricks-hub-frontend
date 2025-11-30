@@ -161,7 +161,7 @@ const LoginForm = () => {
         )}
 
         {/* Submit Button */}
-        <SubmitBtn text="Sign In" isLoading={isPending} />
+        <SubmitBtn text="Sign In" loadingText="Signing in..." isLoading={isPending} />
 
         {/* Divider */}
         <FormDivider />
